@@ -1,0 +1,22 @@
+{
+  "name": "picture-naming",
+  "version": "0.0.1",
+  "description": "Picture naming experiments in a browser",
+  "main": "jspsych.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^22.0.3"
+  },
+  "jest": {
+    "resetModules": true,
+    "testEnvironmentOptions": {
+      "fetchExternalResources": true,
+      "pretendToBeVisual": true
+    }
+  }
+}
