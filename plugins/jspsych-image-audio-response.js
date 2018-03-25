@@ -23,7 +23,6 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 default: undefined,
                 description: 'The image to be displayed'
             },
-            //MEILIN: Set the recording length here.
             bufferLength: {
                 type: jsPsych.plugins.parameterType.INT,
                 pretty_name: 'Buffer length',
@@ -46,7 +45,16 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 description: 'Whether to allow the participant to play back their '+
                 'recording and re-record if unhappy.'
             },
-            //TODO: improve the recording light to make it more obvious for the participants
+            preRecordingLight: {
+                type: jsPsych.plugins.parameterType.HTML_STRING,
+                pretty_name: 'Light before recording',
+                default: '<div id="jspsych-image-audio-response-light" '+
+                    'style="border: 2px solid darkred; background-color: darkred; '+
+                    'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
+                    'display: block;"></div><div style="font-size: 12px; color: gray; ' +
+                    'margin-bottom: 10px;">准备录音</div>',
+                    description: 'HTML to display while recording is about to start.'
+            },
             recordingLight: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Recording light',
@@ -55,7 +63,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
                     'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
                     'display: block;"></div><div style="font-size: 12px; color: gray; ' +
                     'margin-bottom: 10px;">录音中...</div>',
-                    description: 'HTML to display while recording is in progress.'
+                    description: 'HTML to display normal light while recording is in progress.'
             },
             recordingLightDim: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
@@ -65,7 +73,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
                     'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
                     'display: block;"></div><div style="font-size: 12px; color: gray; ' +
                     'margin-bottom: 10px;">录音中...</div>',
-                description: 'HTML to display while recording is in progress.'
+                description: 'HTML to display dim light while recording is in progress.'
             },
             recordingLightOff: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
@@ -101,7 +109,6 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 default: '8px',
                 description: 'The horizontal margin of the button.'
             },
-            //MEILIN: what exactly does this do?
             response_ends_trial: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Response ends trial',
@@ -140,6 +147,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
         // audio element processing
         function startRecording() {
             // remove existing playback elements
+            console.log("----->ask for recording permission")
             playbackElements.forEach(function (id) {
                 let element = document.getElementById(id);
                 element.innerHTML = "";
@@ -149,12 +157,14 @@ jsPsych.plugins["image-audio-response"] = (function() {
             document.querySelector('#jspsych-image-audio-response-audio-container').innerHTML = trial.recordingLight;
         }
 
-        // TODO: Pause 2s before recording.
-
-        startRecording();
+        // TODO: Pause 2s before recording.]
+        let light = document.querySelector('#jspsych-image-audio-response-audio-container');
+        light.innerHTML = trial.preRecordingLight;
+        setTimeout(function(){startRecording()}, 3000);
+        console.log("-------->count down to 3 secs to start recording");
+        //startRecording();
 
         // start timing
-        // TODO: check whether this is the start time for recording after the display; if so, modify start time 
         let start_time = performance.now();
 
         // store response
@@ -173,8 +183,8 @@ jsPsych.plugins["image-audio-response"] = (function() {
             const chunks = [];
             // create media recorder instance to initialize recording
             recorder = new MediaRecorder(stream);
+            console.log("-----> create media recorder instance here");
             recorder.data = [];
-            //MEILIN: what is wrapUp doing here?
             recorder.wrapUp = false;
 
             let lightIsDim = false
@@ -182,6 +192,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
 
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
                 light.innerHTML = lightIsDim ? trial.recordingLight : trial.recordingLightDim;
+                console.log("------> light.innerHTML happens here")
                 lightIsDim = !lightIsDim;
 
                 // add stream data to chunks
@@ -216,7 +227,6 @@ jsPsych.plugins["image-audio-response"] = (function() {
             let playerDiv = display_element.querySelector('#jspsych-image-audio-response-audio-container');
             const blob = new Blob(data, { type: 'audio/webm' });
             let url = (URL.createObjectURL(blob));
-            // COSMO: Is audio an HTML element?
             let player = playerDiv.appendChild(document.createElement('audio'));
             player.id = 'jspsych-image-audio-response-audio';
             player.src = url;
