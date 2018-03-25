@@ -30,36 +30,38 @@
         return url;
     };
 
+    const bufferLength = 5000;
+
     timeline.push({
         type: 'image-audio-response',
         stimulus: 'img/Match_0008_cabbage_2.png',
-        stimulus_duration: 4000,
+        //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的数量和名称 TESTING</p>",
         allowPlayback: true,
-        bufferLength: 5000
+        bufferLength
     });
 
     timeline.push({
         type: 'image-audio-response',
         stimulus: 'img/Match_0026_calculator_3.png',
-        stimulus_duration: 4000,
+        //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         allowPlayback: true,
-        bufferLength: 5000
+        bufferLength
     });
 
     timeline.push({
         type: 'image-audio-response',
         stimulus: 'img/Match_0030_sofa_4.png',
-        stimulus_duration: 4000,
+        //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength: 5000
+        bufferLength
     });
 
     jsPsych.init({
