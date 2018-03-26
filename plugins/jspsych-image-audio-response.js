@@ -49,8 +49,8 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Light before recording',
                 default: '<div id="jspsych-image-audio-response-light" '+
-                    'style="border: 2px solid darkred; background-color: darkred; '+
-                    'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
+                    'style="border: 0px solid darkred; background-color: #8b0000a8; '+
+                    'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
                     'display: block;"></div><div style="font-size: 12px; color: gray; ' +
                     'margin-bottom: 10px;">准备录音</div>',
                     description: 'HTML to display while recording is about to start.'
@@ -59,28 +59,28 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Recording light',
                 default: '<div id="jspsych-image-audio-response-light" '+
-                    'style="border: 2px solid darkred; background-color: darkred; '+
-                    'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
-                    'display: block;"></div><div style="font-size: 12px; color: gray; ' +
-                    'margin-bottom: 10px;">录音中...</div>',
+                    'style="border: 0px solid darkred; background-color: darkred; '+
+                    'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
+                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' + 
+                    'color: gray; margin-bottom: 10px;"></div>',
                     description: 'HTML to display normal light while recording is in progress.'
             },
             recordingLightDim: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Recording light dim',
                 default: '<div id="jspsych-image-audio-response-light" '+
-                    'style="border: 2px solid darkred; background-color: white; '+
-                    'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
-                    'display: block;"></div><div style="font-size: 12px; color: gray; ' +
-                    'margin-bottom: 10px;">录音中...</div>',
+                    'style="border: 0px solid darkred; background-color: #8b0000a8; '+
+                    'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
+                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' + 
+                    'color: gray; margin-bottom: 10px;"></div>',
                 description: 'HTML to display dim light while recording is in progress.'
             },
             recordingLightOff: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Recording light (off state)',
                 default: '<div id="jspsych-image-audio-response-light" '+
-                'style="border: 2px solid darkred; background-color: inherit; '+
-                'width: 50px; height: 50px; border-radius: 50px; margin: 10px auto; '+
+                'style="border: 0px solid darkred; background-color: #8b0000a8; '+
+                'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
                 'display: block;"></div><div style="font-size: 12px; color: gray; ' +
                 'margin-bottom: 10px;">录音停止</div>',
                 description: 'HTML to display while recording is not in progress.'
@@ -173,6 +173,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
             audioData: null
         };
 
+        let dataChunkCount = 0;
         let recorder = null;
         // function to handle responses by the subject
         function process_audio(stream) {
@@ -189,11 +190,17 @@ jsPsych.plugins["image-audio-response"] = (function() {
 
             let lightIsDim = false
             recorder.ondataavailable = e => {
+                dataChunkCount++;
 
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
                 light.innerHTML = lightIsDim ? trial.recordingLight : trial.recordingLightDim;
                 console.log("------> light.innerHTML happens here")
                 lightIsDim = !lightIsDim;
+
+                let clock = document.getElementById('clockDiv');
+                const seconds = Math.floor(dataChunkCount / 2);
+                const displaySeconds = seconds > 9 ? seconds : '0' + seconds; 
+                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
 
                 // add stream data to chunks
                 chunks.push(e.data);
