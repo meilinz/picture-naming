@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Demo experiment</title>
     <script src="../jspsych.js"></script>
+    <script src="../plugins/jspsych-html-keyboard-response.js"></script>
     <script src="../plugins/jspsych-image-audio-response.js"></script>
     <link rel="stylesheet" href="../css/jspsych.css"></link>
     <style>
@@ -13,6 +15,13 @@
 <script>
 
     let timeline = [];
+
+    /* create welcome message */
+    let welcome = {
+        type: "html-keyboard-response",
+        stimulus: "<h2>欢迎来到图片命名实验研究！</h2> <p>请按任何一个键进入实验。</p>"
+    };
+    timeline.push(welcome);
 
     /**
      * Function to execute on recorded data. This function should handle saving the data and return a
