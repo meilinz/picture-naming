@@ -5,6 +5,7 @@
     <script src="../jspsych.js"></script>
     <script src="../plugins/jspsych-html-keyboard-response.js"></script>
     <script src="../plugins/jspsych-image-audio-response.js"></script>
+    <script src="../plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="../css/jspsych.css"></link>
     <style>
         img { width: 300px; }
@@ -17,10 +18,24 @@
     let timeline = [];
 
     /* create welcome message */
-    let welcome = {
+    /*let welcome = {
         type: "html-keyboard-response",
-        stimulus: "<h2>欢迎来到图片命名实验研究！</h2> <p>请按任何一个键进入实验。</p>"
+        stimulus: "<h2>欢迎来到语言与图像实验研究！</h2>" + 
+        "在这个实验里，您将会看到一些图片，您的任务是根据图片说出图片里物品的数量和名称。在实验过程中，您将会被录音。" +
+        "在实验正式开始之前，您将回答几个简短的关于个人语言背景的问题，接着你将进入练习部分，完成几个练习后您将进入实验的主要部分。" +
+        "<p>整个实验大约需要15-20分钟。您的参与是自愿的。</p>" +
+        "<p>如果您同意参加实验，请按任何一个键继续。谢谢！</p>"
     };
+    timeline.push(welcome); */
+
+    let welcome = {
+        type: 'instructions',
+        pages: ['<h2>欢迎来到语言与图像实验研究！</h2><p>在这个实验里，您将会看到一些图片，您的任务是根据图片说出图片里物品的数量和名称。\
+            <br/>在实验过程中，您将会被录音。</p>',
+        '在实验正式开始之前，您将回答几个简短的关于个人语言背景的问题，接着你将进入练习部分，完成几个练习后您将进入实验的主要部分。',
+        '整个实验大约需要15-20分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
+        show_clickable_nav: true
+    }
     timeline.push(welcome);
 
     /**
@@ -38,7 +53,7 @@
         let url = URL.createObjectURL(blob);
         return url;
     };
-
+    
     const bufferLength = 5000;
 
     timeline.push({
@@ -47,7 +62,7 @@
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称 TESTING</p>",
+        prompt: "<p>请说出图中物品的数量和名称</p>",
         allowPlayback: true,
         bufferLength
     });
@@ -75,6 +90,7 @@
 
     jsPsych.init({
         timeline: timeline,
+        show_progress_bar: true,
         on_finish: function(){
             jsPsych.data.displayData();
         }

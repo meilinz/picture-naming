@@ -909,7 +909,7 @@ window.jsPsych = (function() {
   function drawProgressBar() {
     document.querySelector('.jspsych-display-element').insertAdjacentHTML('afterbegin',
       '<div id="jspsych-progressbar-container">'+
-      '<span>Completion Progress</span>'+
+      '<span>完成进度</span>'+
       '<div id="jspsych-progressbar-outer">'+
         '<div id="jspsych-progressbar-inner"></div>'+
       '</div></div>');
