@@ -9,12 +9,12 @@
  *
  **/
 
-jsPsych.plugins["image-audio-response-noplayback"] = (function() {
+jsPsych.plugins["image-audio-response-noplayback-quick"] = (function() {
 
     let plugin = {};
 
     plugin.info = {
-        name: 'image-audio-response-noplayback',
+        name: 'image-audio-response-noplayback-quick',
         description: 'Present an image and retrieve an audio response',
         parameters: {
             stimulus: {
@@ -157,10 +157,10 @@ jsPsych.plugins["image-audio-response-noplayback"] = (function() {
             document.querySelector('#jspsych-image-audio-response-audio-container').innerHTML = trial.recordingLight;
         }
 
-        // TODO: Pause 2s before recording.]
+        // TODO: Pause 0.1s before recording.]
         let light = document.querySelector('#jspsych-image-audio-response-audio-container');
         light.innerHTML = trial.preRecordingLight;
-        setTimeout(function(){startRecording()}, 3000);
+        setTimeout(function(){startRecording()}, 100);
         console.log("-------->count down to 3 secs to start recording");
         //startRecording();
 
