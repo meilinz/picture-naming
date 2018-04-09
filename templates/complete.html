@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html>
+	<head>
+		<title>Psychology Experiment</title>
+		<link rel=stylesheet href="/static/css/bootstrap.min.css" type="text/css">
+		<link rel=stylesheet href="/static/css/style.css" type="text/css">
+		<style>
+			/* ad.html  - the ad that people view first */
+			.adlogo {
+				display: block;
+				margin: 10px auto;
+				max-width: 130px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container-ad">
+
+			<div id="ad">
+				<div class="row">
+					<div class="col-xs-2">
+						<img class="adlogo" src="{{ server_location }}/static/images/mit.png" alt="Massachusetts Institute of Technology" />
+						<img class="adlogo" src="{{ server_location }}/static/images/bcs.png" alt="Department of Brain and Cognitive Sciences" />
+					</div>
+					<div class="col-xs-10">
+						<h1>Task complete!</h1>
+						<hr>
+					    <div class="alert alert-warning">
+					    	Thank you for participating. You should receive your compensation shortly.
+					    </div>
+					</div>
+			</div>
+		</div>
+	</body>
+</html>

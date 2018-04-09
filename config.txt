@@ -1,0 +1,36 @@
+[HIT Configuration]
+title = Spatial Language Experiment
+description = Respond to questions about everyday scenes
+amt_keywords = language, psychology, experiment, space, spatial
+lifetime = 24
+us_only = true
+approve_requirement = 95
+contact_email_on_error = meilinz@mit.edu
+ad_group = spatial language
+psiturk_keywords = spatial language
+organization_name = Massachusetts Institute of Technology
+browser_exclude_rule = MSIE, mobile, tablet
+
+[Database Parameters]
+database_url = sqlite:///participants.db
+table_name = turkdemo
+
+[Server Parameters]
+host = 0.0.0.0
+port = 22362
+cutoff_time = 30
+logfile = server.log
+loglevel = 2
+debug = true
+login_username = examplename
+login_pw = examplepassword
+threads = auto
+upload_folder = sounds
+
+[Task Parameters]
+experiment_code_version = 1.0
+num_conds = 1
+num_counters = 1
+
+[Shell Parameters]
+launch_in_sandbox_mode = true
