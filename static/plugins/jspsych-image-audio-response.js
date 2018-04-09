@@ -145,6 +145,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
         display_element.innerHTML = html;
 
         // audio element processing
+        let audio_context = new AudioContext;
         function startRecording() {
             // remove existing playback elements
             console.log("----->ask for recording permission")
@@ -173,67 +174,47 @@ jsPsych.plugins["image-audio-response"] = (function() {
             audioData: null
         };
 
-        let dataChunkCount = 0;
         let recorder = null;
         // function to handle responses by the subject
         function process_audio(stream) {
-            // This code largely thanks to skyllo at
-            // http://air.ghost.io/recording-to-an-audio-file-using-html5-and-js/
-
-            // store streaming data chunks in array
-            const chunks = [];
             // create media recorder instance to initialize recording
-            recorder = new MediaRecorder(stream);
+            console.log("stream", stream, stream.context);
+            var input = audio_context.createMediaStreamSource(stream);
+            recorder = new Recorder(input);
             console.log("-----> create media recorder instance here");
-            recorder.data = [];
-            recorder.wrapUp = false;
 
-            let lightIsDim = false
-            recorder.ondataavailable = e => {
-                dataChunkCount++;
-
+            let numSeconds = 0;
+            let clock = document.getElementById('clockDiv');
+            let lightIsDim = false;
+            let interval = setInterval(() => {
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
                 light.innerHTML = lightIsDim ? trial.recordingLight : trial.recordingLightDim;
                 console.log("------> light.innerHTML happens here")
                 lightIsDim = !lightIsDim;
 
-                let clock = document.getElementById('clockDiv');
-                const seconds = Math.floor(dataChunkCount / 2);
-                const displaySeconds = seconds > 9 ? seconds : '0' + seconds; 
-                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
-
-                // add stream data to chunks
-                chunks.push(e.data);
-                if (recorder.wrapUp) {
-                    if (typeof trial.postprocessing !== 'undefined') {
-                        onRecordingFinish(trial.postprocessing(chunks));
-                    } else {
-                        // should never fire - trial.postprocessing is mandatory
-                        onRecordingFinish(chunks);
-                    }
-                    if (trial.allowPlayback) {
-                        showPlaybackTools(chunks);
-                    }
+                if (numSeconds == trial.bufferLength / 1000) {
+                    recorder.stop();
+                    recorder.exportWAV((data) => {
+                        if (trial.allowPlayback)
+                            showPlaybackTools(data);
+                        onRecordingFinish(trial.postprocessing(data));
+                    });
+                    clearInterval(interval);
+                } else if (numSeconds == 0) {
+                    recorder.record();
                 }
 
-
-            };
-
-            // start recording with 0.5 second time between receiving 'ondataavailable' events
-            recorder.start(500);
-            // setTimeout to stop recording after 4 seconds
-            setTimeout(() => {
-                // this will trigger one final 'ondataavailable' event and set recorder state to 'inactive'
-                recorder.stop();
-                recorder.wrapUp = true;
-            }, trial.bufferLength);
+                console.log(clock);
+                const displaySeconds = numSeconds > 9 ? numSeconds : '0' + numSeconds;
+                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
+                numSeconds++;
+            }, 1000);
         }
 
         function showPlaybackTools(data) {
             // Audio Player
             let playerDiv = display_element.querySelector('#jspsych-image-audio-response-audio-container');
-            const blob = new Blob(data, { type: 'audio/webm' });
-            let url = (URL.createObjectURL(blob));
+            let url = (URL.createObjectURL(data));
             let player = playerDiv.appendChild(document.createElement('audio'));
             player.id = 'jspsych-image-audio-response-audio';
             player.src = url;

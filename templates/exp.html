@@ -6,6 +6,7 @@
     <script src="/static/lib/jquery-min.js" type="text/javascript"></script>
     <script src="/static/lib/underscore-min.js" type="text/javascript"></script>
     <script src="/static/lib/backbone-min.js" type="text/javascript"></script>
+    <script src="/static/lib/recorder.js" type="text/javascript"></script>
 
     <script src="/static/jspsych.js"></script>
     <script src="/static/plugins/jspsych-html-keyboard-response.js"></script>
@@ -37,20 +38,9 @@
 
     var audioSamples = {};
 
-    /**
-     * Function to execute on recorded data. This function should handle saving the data and return a
-     * JSON/csv-friendly value which will be inserted into the results. This allows the saved data to be
-     * related back to the trial which generated it.
-     *
-     * This particular function generates an object URL and returns that.
-     *
-     * @param data - audio data recorded from the user
-     * @returns {string} - JSON/csv-friendly data to be inserted into jspsych results report
-     */
-    const saveFunction = function(data) {
-        const blob = new Blob(data, { type: 'audio/webm' });
+    const saveFunction = function(blob) {
         let url = URL.createObjectURL(blob);
-        audioSamples[url] = data;
+        audioSamples[url] = blob;
         return url;
     };
 
