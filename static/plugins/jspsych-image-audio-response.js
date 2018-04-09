@@ -184,13 +184,11 @@ jsPsych.plugins["image-audio-response"] = (function() {
         // function to handle responses by the subject
         function process_audio(stream) {
             // create media recorder instance to initialize recording
-            console.log("stream", stream, stream.context);
             var input = audio_context.createMediaStreamSource(stream);
             recorder = new Recorder(input);
             console.log("-----> create media recorder instance here");
 
             let numSeconds = 0;
-            let clock = document.getElementById('clockDiv');
             let lightIsDim = false;
             let interval = setInterval(() => {
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
@@ -201,29 +199,31 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 if (numSeconds == trial.bufferLength / 1000) {
                     recorder.stop();
                     recorder.exportWAV((data) => {
+                        onRecordingFinish(trial.postprocessing(data));
+
                         if (trial.allowPlayback)
                             showPlaybackTools(data);
-                        onRecordingFinish(trial.postprocessing(data));
                     });
                     clearInterval(interval);
                 } else if (numSeconds == 0) {
                     recorder.record();
                 }
 
-                console.log(clock);
+                let clock = document.getElementById('clockDiv');
                 const displaySeconds = numSeconds > 9 ? numSeconds : '0' + numSeconds;
                 clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
                 numSeconds++;
-            }, 1000);
+            }, 1000, true);
         }
 
         function showPlaybackTools(data) {
             // Audio Player
             let playerDiv = display_element.querySelector('#jspsych-image-audio-response-audio-container');
             let url = (URL.createObjectURL(data));
-            let player = playerDiv.appendChild(document.createElement('audio'));
 
             if (!trial.hidePlayer) {
+                let player = playerDiv.appendChild(document.createElement('audio'));
+
                 player.id = 'jspsych-image-audio-response-audio';
                 player.src = url;
                 player.controls = true;

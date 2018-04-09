@@ -11,7 +11,6 @@
     <script src="/static/jspsych.js"></script>
     <script src="/static/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="/static/plugins/jspsych-image-audio-response.js"></script>
-    <script src="/static/plugins/jspsych-image-audio-response-noplayback.js"></script>
     <script src="/static/plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="/static/css/jspsych.css"></link>
 
@@ -147,7 +146,8 @@
     timeline.push(instruction3)
 
     timeline.push({
-        type: 'image-audio-response-noplayback',
+        type: 'image-audio-response',
+        hidePlayer: true,
         stimulus: 'static/img/Match_0008_cabbage_2.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -157,7 +157,8 @@
     });
 
     timeline.push({
-        type: 'image-audio-response-noplayback',
+        type: 'image-audio-response',
+        hidePlayer: true,
         stimulus: 'static/img/Match_0026_calculator_3.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -167,7 +168,8 @@
     });
 
     timeline.push({
-        type: 'image-audio-response-noplayback',
+        type: 'image-audio-response',
+        hidePlayer: true,
         stimulus: 'static/img/Match_0030_sofa_4.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -193,7 +195,6 @@
 
             // Submit trial audio to server.
             var audioSample = audioSamples[trial_data.audioData];
-            console.log("sample", audioSample);
             var request = new XMLHttpRequest();
             request.open('PUT', '/_wav_upload/' + uniqueId + '/' + trial_data.trial_index, true);
 //            request.onload = onload || function(){ recorder.clear(); __log(this.responseText) };
