@@ -104,7 +104,11 @@
         pages: ['<h2>实验说明</h2>在练习中，您将有机会回放检查自己的录音。<strong>录音完成后，请点击播放键检查录音是否成功。</strong></br>\
         如果您能听到自己的声音，说明录音成功可以继续。否则，请检查麦克风设置。</br>\
         请点击下一页进入练习。</br></br></br>'],
-        show_clickable_nav: true
+        show_clickable_nav: true,
+
+        on_finish: function(data) {
+            psiturk.startTask();
+        },
     };
     timeline.push(instuction2)
 
