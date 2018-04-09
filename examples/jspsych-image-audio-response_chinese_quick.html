@@ -4,8 +4,8 @@
     <title>Demo experiment</title>
     <script src="../jspsych.js"></script>
     <script src="../plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="../plugins/jspsych-image-audio-response.js"></script>
-    <script src="../plugins/jspsych-image-audio-response-noplayback.js"></script>
+    <script src="../plugins/jspsych-image-audio-response-quick.js"></script>
+    <script src="../plugins/jspsych-image-audio-response-noplayback-quick.js"></script>
     <script src="../plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="../css/jspsych.css"></link>
     <style>
@@ -78,7 +78,7 @@
     const bufferLength = 5000;
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/MisMatch_0062_pumpkin_2.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -89,7 +89,7 @@
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0019_tank_4.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -100,7 +100,7 @@
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0038_sewingmachine_3.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -119,7 +119,7 @@
     timeline.push(instruction3)
 
     timeline.push({
-        type: 'image-audio-response-noplayback',
+        type: 'image-audio-response-noplayback-quick',
         stimulus: 'img/Match_0008_cabbage_2.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -129,7 +129,7 @@
     });
 
     timeline.push({
-        type: 'image-audio-response-noplayback',
+        type: 'image-audio-response-noplayback-quick',
         stimulus: 'img/Match_0026_calculator_3.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
@@ -139,7 +139,7 @@
     });
 
     timeline.push({
-        type: 'image-audio-response-noplayback',
+        type: 'image-audio-response-noplayback-quick',
         stimulus: 'img/Match_0030_sofa_4.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,

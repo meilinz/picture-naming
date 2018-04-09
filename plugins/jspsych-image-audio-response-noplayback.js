@@ -9,12 +9,12 @@
  *
  **/
 
-jsPsych.plugins["image-audio-response"] = (function() {
+jsPsych.plugins["image-audio-response-noplayback"] = (function() {
 
     let plugin = {};
 
     plugin.info = {
-        name: 'image-audio-response',
+        name: 'image-audio-response-noplayback',
         description: 'Present an image and retrieve an audio response',
         parameters: {
             stimulus: {
@@ -234,10 +234,10 @@ jsPsych.plugins["image-audio-response"] = (function() {
             let playerDiv = display_element.querySelector('#jspsych-image-audio-response-audio-container');
             const blob = new Blob(data, { type: 'audio/webm' });
             let url = (URL.createObjectURL(blob));
-            let player = playerDiv.appendChild(document.createElement('audio'));
-            player.id = 'jspsych-image-audio-response-audio';
-            player.src = url;
-            player.controls = true;
+            //let player = playerDiv.appendChild(document.createElement('audio'));
+            //player.id = 'jspsych-image-audio-response-audio';
+            //player.src = url;
+            //player.controls = true;
             // Okay/rerecord buttons
             let buttonDiv = display_element.querySelector('#jspsych-image-audio-response-buttons');
             let okay = buttonDiv.appendChild(document.createElement('button'));
@@ -251,7 +251,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
             okay.addEventListener('click', end_trial);
             //rerecord.addEventListener('click', startRecording); 
             // Save ids of things we want to delete later:
-            playbackElements = [playerDiv.id, buttonDiv.id];
+            //playbackElements = [playerDiv.id, buttonDiv.id];
         }
 
         function onRecordingFinish(data) {
