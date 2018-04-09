@@ -2,7 +2,7 @@
  * jspsych-image-audio-response
  * Matt Jaquiery, Feb 2018
  * Meilin Zhan, March 2018
- * 
+ *
  * plugin for displaying a stimulus and getting an audio response
  *
  * documentation: docs.jspsych.org
@@ -45,6 +45,12 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 description: 'Whether to allow the participant to play back their '+
                 'recording and re-record if unhappy.'
             },
+            hidePlayer: {
+                type: jsPsych.plugins.parameterType.BOOL,
+                pretty_name: "Hide player in playback dialog",
+                default: false,
+                description: "Whether to hide the player in the playback dialog (if true, just expose confirmation button)",
+            },
             preRecordingLight: {
                 type: jsPsych.plugins.parameterType.HTML_STRING,
                 pretty_name: 'Light before recording',
@@ -61,7 +67,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 default: '<div id="jspsych-image-audio-response-light" '+
                     'style="border: 0px solid darkred; background-color: darkred; '+
                     'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
-                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' + 
+                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' +
                     'color: gray; margin-bottom: 10px;"></div>',
                     description: 'HTML to display normal light while recording is in progress.'
             },
@@ -71,7 +77,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
                 default: '<div id="jspsych-image-audio-response-light" '+
                     'style="border: 0px solid darkred; background-color: #8b0000a8; '+
                     'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
-                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' + 
+                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' +
                     'color: gray; margin-bottom: 10px;"></div>',
                 description: 'HTML to display dim light while recording is in progress.'
             },
@@ -216,9 +222,12 @@ jsPsych.plugins["image-audio-response"] = (function() {
             let playerDiv = display_element.querySelector('#jspsych-image-audio-response-audio-container');
             let url = (URL.createObjectURL(data));
             let player = playerDiv.appendChild(document.createElement('audio'));
-            player.id = 'jspsych-image-audio-response-audio';
-            player.src = url;
-            player.controls = true;
+
+            if (!trial.hidePlayer) {
+                player.id = 'jspsych-image-audio-response-audio';
+                player.src = url;
+                player.controls = true;
+            }
             // Okay/rerecord buttons
             let buttonDiv = display_element.querySelector('#jspsych-image-audio-response-buttons');
             let okay = buttonDiv.appendChild(document.createElement('button'));
@@ -226,13 +235,16 @@ jsPsych.plugins["image-audio-response"] = (function() {
             okay.id = 'jspsych-image-audio-response-okay';
             //rerecord.id = 'jspsych-image-audio-response-rerecord';
             okay.textContent = '下一页';
-            //rerecord.textContent = 'Rerecord'; 
+            //rerecord.textContent = 'Rerecord';
             okay.className = 'jspsych-audio-response-button jspsych-btn';
-            //rerecord.className = okay.className; 
+            //rerecord.className = okay.className;
             okay.addEventListener('click', end_trial);
-            //rerecord.addEventListener('click', startRecording); 
-            // Save ids of things we want to delete later:
-            playbackElements = [playerDiv.id, buttonDiv.id];
+            //rerecord.addEventListener('click', startRecording);
+
+            if (!trial.hidePlayer) {
+                // Save ids of things we want to delete later:
+                playbackElements = [playerDiv.id, buttonDiv.id];
+            }
         }
 
         function onRecordingFinish(data) {
