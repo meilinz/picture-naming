@@ -124,6 +124,9 @@ jsPsych.plugins["image-audio-response"] = (function() {
         }
     };
 
+    // Prepare AudioContext to be used in recording.
+    let audio_context = new AudioContext;
+
     plugin.trial = function(display_element, trial) {
 
         if(typeof trial.stimulus === 'undefined'){
@@ -151,7 +154,6 @@ jsPsych.plugins["image-audio-response"] = (function() {
         display_element.innerHTML = html;
 
         // audio element processing
-        let audio_context = new AudioContext;
         function startRecording() {
             // remove existing playback elements
             console.log("----->ask for recording permission")
