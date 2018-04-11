@@ -190,8 +190,9 @@
         },
         on_data_update: function(trial_data) {
             // Only need to do post-processing for audio trials.
-            if (!trial_data.audioData)
-                return;
+            //if (!trial_data.audioData)
+            //    return;
+            psiturk.recordTrialData(trial_data);
 
             // Submit trial audio to server.
             var audioSample = audioSamples[trial_data.audioData];
