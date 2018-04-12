@@ -9,12 +9,12 @@
  *
  **/
 
-jsPsych.plugins["image-audio-response"] = (function() {
+jsPsych.plugins["image-audio-response-retry"] = (function() {
 
     let plugin = {};
 
     plugin.info = {
-        name: 'image-audio-response',
+        name: 'image-audio-response-retry',
         description: 'Present an image and retrieve an audio response',
         parameters: {
             stimulus: {
@@ -233,15 +233,15 @@ jsPsych.plugins["image-audio-response"] = (function() {
             // Okay/rerecord buttons
             let buttonDiv = display_element.querySelector('#jspsych-image-audio-response-buttons');
             let okay = buttonDiv.appendChild(document.createElement('button'));
-            //let rerecord = buttonDiv.appendChild(document.createElement('button'));
+            let rerecord = buttonDiv.appendChild(document.createElement('button'));
             okay.id = 'jspsych-image-audio-response-okay';
-            //rerecord.id = 'jspsych-image-audio-response-rerecord';
+            rerecord.id = 'jspsych-image-audio-response-rerecord';
             okay.textContent = '下一页';
-            //rerecord.textContent = 'Rerecord';
+            rerecord.textContent = '重新录音';
             okay.className = 'jspsych-audio-response-button jspsych-btn';
-            //rerecord.className = okay.className;
+            rerecord.className = okay.className;
             okay.addEventListener('click', end_trial);
-            //rerecord.addEventListener('click', startRecording);
+            rerecord.addEventListener('click', startRecording);
 
             if (!trial.hidePlayer) {
                 // Save ids of things we want to delete later:
