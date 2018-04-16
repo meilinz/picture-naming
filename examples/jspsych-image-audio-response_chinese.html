@@ -4,7 +4,7 @@
     <title>Demo experiment</title>
     <script src="../jspsych.js"></script>
     <script src="../plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="../plugins/jspsych-image-audio-response.js"></script>
+    <!-- <script src="../plugins/jspsych-image-audio-response.js"></script> -->
     <script src="../plugins/jspsych-image-audio-response-noplayback.js"></script>
     <script src="../plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="../css/jspsych.css"></link>
@@ -78,34 +78,34 @@
     const bufferLength = 5000;
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-noplayback',
         stimulus: 'img/MisMatch_0062_pumpkin_2.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         allowPlayback: true,
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-noplayback',
         stimulus: 'img/Match_0019_tank_4.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         allowPlayback: true,
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-noplayback',
         stimulus: 'img/Match_0038_sewingmachine_3.png',
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         allowPlayback: true,
         bufferLength
     });    
@@ -124,7 +124,7 @@
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
@@ -134,7 +134,7 @@
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
@@ -144,7 +144,7 @@
         //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
+        prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
