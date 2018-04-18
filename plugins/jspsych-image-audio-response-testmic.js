@@ -163,6 +163,15 @@ jsPsych.plugins["image-audio-response-testmic"] = (function() {
         okayButton.className = 'jspsych-audio-response-button jspsych-btn';
         okayButton.addEventListener('click', end_trial);
 
+        // add "re-record" button element
+        const rerecordButton = buttonDiv.appendChild(document.createElement('button'));
+        rerecordButton.setAttribute('style', 'visibility: hidden');
+        rerecordButton.id = 'jspsych-image-audio-response-rerecord';
+        rerecordButton.textContent = '重新录音';
+        rerecordButton.className = 'jspsych-audio-response-button jspsych-btn';
+        rerecordButton.addEventListener('click', startRecording);
+
+
         // audio element processing
         function startRecording() {
             // remove existing playback elements
@@ -190,13 +199,13 @@ jsPsych.plugins["image-audio-response-testmic"] = (function() {
             audioData: null
         };
 
-        let dataChunkCount = 0;
+        //let dataChunkCount = 0;
         let recorder = null;
         // function to handle responses by the subject
         function process_audio(stream) {
             // This code largely thanks to skyllo at
             // http://air.ghost.io/recording-to-an-audio-file-using-html5-and-js/
-
+            let dataChunkCount = 0;
             // store streaming data chunks in array
             const chunks = [];
             // create media recorder instance to initialize recording
@@ -247,6 +256,8 @@ jsPsych.plugins["image-audio-response-testmic"] = (function() {
         function showPlaybackTools(data) {            
             const okayButton = display_element.querySelector('#jspsych-image-audio-response-okay');
             okayButton.setAttribute('style', 'visibility: visible;');
+            const rerecordButton = display_element.querySelector('#jspsych-image-audio-response-rerecord')
+            rerecordButton.setAttribute('style', 'visibility: visible');
 
             const audioPlayer = display_element.querySelector('#jspsych-image-audio-response-audio');
             const blob = new Blob(data, { type: 'audio/webm' });
