@@ -2,7 +2,7 @@
  * jspsych-image-audio-response
  * Matt Jaquiery, Feb 2018
  * Meilin Zhan, March 2018
- * 
+ *
  * plugin for displaying a stimulus and getting an audio response
  *
  * documentation: docs.jspsych.org
@@ -41,7 +41,7 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
             allowPlayback: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Allow playback',
-                default: true,
+                default: false,
                 description: 'Whether to allow the participant to play back their '+
                 'recording and re-record if unhappy.'
             },
@@ -51,8 +51,8 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
                 default: '<div id="jspsych-image-audio-response-light" '+
                     'style="border: 0px solid darkred; background-color: #8b0000a8; '+
                     'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
-                    'display: block;"></div><div style="font-size: 12px; color: gray; ' +
-                    'margin-bottom: 10px;">准备录音</div>',
+                    'display: block;"></div>' + 
+                    '<div id="clockDiv" style="font-size: 12px; color: gray; margin-bottom: 10px;">准备录音</div>',
                     description: 'HTML to display while recording is about to start.'
             },
             recordingLight: {
@@ -61,8 +61,8 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
                 default: '<div id="jspsych-image-audio-response-light" '+
                     'style="border: 0px solid darkred; background-color: darkred; '+
                     'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
-                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' + 
-                    'color: gray; margin-bottom: 10px;"></div>',
+                    'display: block;"></div>' + 
+                    '<div id="clockDiv" style="font-size: 12px; color: gray; margin-bottom: 10px;"></div>',
                     description: 'HTML to display normal light while recording is in progress.'
             },
             recordingLightDim: {
@@ -71,8 +71,8 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
                 default: '<div id="jspsych-image-audio-response-light" '+
                     'style="border: 0px solid darkred; background-color: #8b0000a8; '+
                     'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
-                    'display: block;"></div><div id="clockDiv" style="font-size: 12px; ' + 
-                    'color: gray; margin-bottom: 10px;"></div>',
+                    'display: block;"></div>'+
+                    '<div id="clockDiv" style="font-size: 12px; color: gray; margin-bottom: 10px;"></div>',
                 description: 'HTML to display dim light while recording is in progress.'
             },
             recordingLightOff: {
@@ -81,8 +81,8 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
                 default: '<div id="jspsych-image-audio-response-light" '+
                 'style="border: 0px solid darkred; background-color: #8b0000a8; '+
                 'width: 20px; height: 20px; border-radius: 20px; margin: 10px auto; '+
-                'display: block;"></div><div style="font-size: 12px; color: gray; ' +
-                'margin-bottom: 10px;">录音停止</div>',
+                'display: block;"></div>'+
+                '<div id="clockDiv" style="font-size: 12px; color: gray; margin-bottom: 10px;">录音停止</div>',
                 description: 'HTML to display while recording is not in progress.'
             },
             prompt: {
@@ -112,11 +112,14 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
             response_ends_trial: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Response ends trial',
-                default: false,
+                default: true,
                 description: 'If true, then trial will end when user responds.'
             }
         }
     };
+
+    // Prepare AudioContext to be used in recording.
+    let audio_context = new AudioContext;
 
     plugin.trial = function(display_element, trial) {
 
@@ -126,23 +129,41 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
         if(typeof trial.postprocessing === 'undefined'){
             console.error('Required parameter "postprocessing" missing in image-audio-response');
         }
-
-        let playbackElements = [];
-
+        
         // display stimulus
-        let html = '<img src="'+trial.stimulus+'" id="jspsych-image-audio-response-stimulus"/>';
+        let playbackElements = [];
+        const stimulusId = 'jspsych-image-audio-response-stimulus';
+        const stimulusStyle = 'height: 200px; width: auto;';
+        let html = `<img src="${trial.stimulus}" id="${stimulusId}" style="${stimulusStyle}"/>`;
 
         // add audio element
-        html += '<div id="jspsych-image-audio-response-audio-container">'+trial.recordingLightOff+'</div>';
+        const audioId = 'jspsych-image-audio-response-audio-container';
+        html += `<div id="${audioId}">${trial.recordingLightOff}</div>`;
 
         //show prompt if there is one
         if (trial.prompt !== null) {
             html += trial.prompt;
         }
         // add button element
+        html += '<div id="jspsych-image-audio-response-player"></div>';
         html += '<div id="jspsych-image-audio-response-buttons"></div>';
-
         display_element.innerHTML = html;
+
+        // add audio player element
+        const playerDiv = display_element.querySelector('#jspsych-image-audio-response-player');
+        const audioPlayer = playerDiv.appendChild(document.createElement('audio'));
+        audioPlayer.setAttribute('style', 'visibility: hidden;');
+        audioPlayer.id = 'jspsych-image-audio-response-audio';
+        audioPlayer.controls = true
+
+        // add "next page" button element
+        const buttonDiv = display_element.querySelector('#jspsych-image-audio-response-buttons');
+        const okayButton = buttonDiv.appendChild(document.createElement('button'));
+        okayButton.setAttribute('style', 'visibility: hidden;');
+        okayButton.id = 'jspsych-image-audio-response-okay';
+        okayButton.textContent = '下一页';
+        okayButton.className = 'jspsych-audio-response-button jspsych-btn';
+        okayButton.addEventListener('click', end_trial);
 
         // audio element processing
         function startRecording() {
@@ -153,14 +174,12 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
                 element.innerHTML = "";
             });
             navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(process_audio);
-            // Add visual indicators to let people know we're recording
-            document.querySelector('#jspsych-image-audio-response-audio-container').innerHTML = trial.recordingLight;
         }
 
-        // TODO: Pause 1s before recording.]
+        // TODO: Pause N ms before recording.
         let light = document.querySelector('#jspsych-image-audio-response-audio-container');
         light.innerHTML = trial.preRecordingLight;
-        setTimeout(function(){startRecording()}, 100);
+        setTimeout(function(){startRecording()}, 50);
         console.log("-------->count down to 3 secs to start recording");
         //startRecording();
 
@@ -173,85 +192,51 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
             audioData: null
         };
 
-        let dataChunkCount = 0;
         let recorder = null;
         // function to handle responses by the subject
         function process_audio(stream) {
-            // This code largely thanks to skyllo at
-            // http://air.ghost.io/recording-to-an-audio-file-using-html5-and-js/
-
-            // store streaming data chunks in array
-            const chunks = [];
             // create media recorder instance to initialize recording
-            recorder = new MediaRecorder(stream);
+            var input = audio_context.createMediaStreamSource(stream);
+            recorder = new Recorder(input);
             console.log("-----> create media recorder instance here");
-            recorder.data = [];
-            recorder.wrapUp = false;
 
-            let lightIsDim = false
-            recorder.ondataavailable = e => {
-                dataChunkCount++;
-
+            let numSeconds = 0;
+            let lightIsDim = false;
+            let interval = setInterval(() => {
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
                 light.innerHTML = lightIsDim ? trial.recordingLight : trial.recordingLightDim;
                 console.log("------> light.innerHTML happens here")
                 lightIsDim = !lightIsDim;
 
-                let clock = document.getElementById('clockDiv');
-                const seconds = Math.floor(dataChunkCount / 2);
-                const displaySeconds = seconds > 9 ? seconds : '0' + seconds; 
-                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
+                if (numSeconds == trial.bufferLength / 1000) {
+                    recorder.stop();
+                    recorder.exportWAV((data) => {
+                        onRecordingFinish(trial.postprocessing(data));
 
-                // add stream data to chunks
-                chunks.push(e.data);
-                if (recorder.wrapUp) {
-                    if (typeof trial.postprocessing !== 'undefined') {
-                        onRecordingFinish(trial.postprocessing(chunks));
-                    } else {
-                        // should never fire - trial.postprocessing is mandatory
-                        onRecordingFinish(chunks);
-                    }
-                    if (trial.allowPlayback) {
-                        showPlaybackTools(chunks);
-                    }
+                        if (trial.allowPlayback)
+                            showPlaybackTools(data);
+                    });
+                    clearInterval(interval);
+                } else if (numSeconds == 0) {
+                    recorder.record();
                 }
 
-
-            };
-
-            // start recording with 0.5 second time between receiving 'ondataavailable' events
-            recorder.start(500);
-            // setTimeout to stop recording after 4 seconds
-            setTimeout(() => {
-                // this will trigger one final 'ondataavailable' event and set recorder state to 'inactive'
-                recorder.stop();
-                recorder.wrapUp = true;
-            }, trial.bufferLength);
+                let clock = document.getElementById('clockDiv');
+                const displaySeconds = numSeconds > 9 ? numSeconds : '0' + numSeconds;
+                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
+                numSeconds++;
+            }, 1000, true);
         }
 
         function showPlaybackTools(data) {
             // Audio Player
-            let playerDiv = display_element.querySelector('#jspsych-image-audio-response-audio-container');
-            const blob = new Blob(data, { type: 'audio/webm' });
-            let url = (URL.createObjectURL(blob));
-            let player = playerDiv.appendChild(document.createElement('audio'));
-            player.id = 'jspsych-image-audio-response-audio';
-            player.src = url;
-            player.controls = true;
-            // Okay/rerecord buttons
-            let buttonDiv = display_element.querySelector('#jspsych-image-audio-response-buttons');
-            let okay = buttonDiv.appendChild(document.createElement('button'));
-            //let rerecord = buttonDiv.appendChild(document.createElement('button'));
-            okay.id = 'jspsych-image-audio-response-okay';
-            //rerecord.id = 'jspsych-image-audio-response-rerecord';
-            okay.textContent = '下一页';
-            //rerecord.textContent = 'Rerecord'; 
-            okay.className = 'jspsych-audio-response-button jspsych-btn';
-            //rerecord.className = okay.className; 
-            okay.addEventListener('click', end_trial);
-            //rerecord.addEventListener('click', startRecording); 
-            // Save ids of things we want to delete later:
-            playbackElements = [playerDiv.id, buttonDiv.id];
+            const okayButton = display_element.querySelector('#jspsych-image-audio-response-okay');
+            okayButton.setAttribute('style', 'visibility: visible;');
+
+            const audioPlayer = display_element.querySelector('#jspsych-image-audio-response-audio');
+            let url = (URL.createObjectURL(data));
+            audioPlayer.src = url;
+            //audioPlayer.setAttribute('style', 'visibility: visible;'); // comment out this line if we don't want to show the audio player
         }
 
         function onRecordingFinish(data) {

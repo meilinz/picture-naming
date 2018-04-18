@@ -10,8 +10,9 @@
 
     <script src="/static/jspsych.js"></script>
     <script src="/static/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="/static/plugins/jspsych-image-audio-response.js"></script>
-    <script src="/static/plugins/jspsych-image-audio-response-retry.js"></script>
+    <script src="/static/plugins/jspsych-image-audio-response-quick.js"></script>
+    <!-- <script src="/static/plugins/jspsych-image-audio-response.js"></script> -->
+    <script src="/static/plugins/jspsych-image-audio-response-testmic.js"></script>
     <script src="/static/plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="/static/css/jspsych.css"></link>
 
@@ -57,16 +58,6 @@
 
     let timeline = [];
 
-    /* create welcome message */
-    /*let welcome = {
-        type: "html-keyboard-response",
-        stimulus: "<h2>欢迎来到语言与图像实验研究！</h2>" +
-        "在这个实验里，您将会看到一些图片，您的任务是根据图片说出图片里物品的数量和名称。在实验过程中，您将会被录音。" +
-        "在实验正式开始之前，你将进入练习部分，完成几个练习后您将进入实验的主要部分。" +
-        "<p>整个实验大约需要15-20分钟。您的参与是自愿的。</p>" +
-        "<p>如果您同意参加实验，请按任何一个键继续。谢谢！</p>"
-    };
-    timeline.push(welcome); */
 
     let welcome = {
         type: 'instructions',
@@ -106,9 +97,8 @@
     const bufferLength = 5000;
 
     timeline.push({
-        type: 'image-audio-response-retry',
+        type: 'image-audio-response-testmic',
         stimulus: 'static/img/Object_0176_penguin_3.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
         response_ends_trial: false,
         prompt: "<p>麦克风测试: 如果您能听见自己的声音，说明录音成功可以点击下一页继续。</br>如果您对录音不满意，可以点击重新录音。</br>如果没有声音，请检查麦克风设置。</p>",
@@ -125,35 +115,26 @@
     timeline.push(instruction3)
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'static/img/MisMatch_0062_pumpkin_2.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: true,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        allowPlayback: false,
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0019_tank_4.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: true,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        allowPlayback: false,
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0038_sewingmachine_3.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: true,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        allowPlayback: false,
         bufferLength
     });
 
@@ -166,38 +147,26 @@
     timeline.push(instruction4)
 
     timeline.push({
-        type: 'image-audio-response',
-        hidePlayer: true,
+        type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0008_cabbage_2.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: true,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        allowPlayback: false,
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
-        hidePlayer: true,
+        type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0026_calculator_3.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: true,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        allowPlayback: false,
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
-        hidePlayer: true,
+        type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0030_sofa_4.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: true,
         prompt: "<p>请说出图中物品的数量和名称</p>",
-        allowPlayback: false,
         bufferLength
     });
 
@@ -221,7 +190,6 @@
             var audioSample = audioSamples[trial_data.audioData];
             var request = new XMLHttpRequest();
             request.open('PUT', '/_wav_upload/' + uniqueId + '/' + trial_data.trial_index, true);
-//            request.onload = onload || function(){ recorder.clear(); __log(this.responseText) };
             request.onerror = onerror || function(){
             recorder.clear();
             __log("couldn't connect to server for file upload")
