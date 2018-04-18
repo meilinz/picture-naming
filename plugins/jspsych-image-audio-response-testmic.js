@@ -1,5 +1,5 @@
 /**
- * jspsych-image-audio-response
+ * jspsych-image-audio-response-testmic
  * Matt Jaquiery, Feb 2018
  * Meilin Zhan, March 2018
  * 
@@ -9,12 +9,12 @@
  *
  **/
 
-jsPsych.plugins["image-audio-response"] = (function() {
+jsPsych.plugins["image-audio-response-testmic"] = (function() {
 
     let plugin = {};
 
     plugin.info = {
-        name: 'image-audio-response',
+        name: 'image-audio-response-testmic',
         description: 'Present an image and retrieve an audio response',
         parameters: {
             stimulus: {
@@ -163,6 +163,15 @@ jsPsych.plugins["image-audio-response"] = (function() {
         okayButton.className = 'jspsych-audio-response-button jspsych-btn';
         okayButton.addEventListener('click', end_trial);
 
+        // add "re-record" button element
+        const rerecordButton = buttonDiv.appendChild(document.createElement('button'));
+        rerecordButton.setAttribute('style', 'visibility: hidden');
+        rerecordButton.id = 'jspsych-image-audio-response-rerecord';
+        rerecordButton.textContent = '重新录音';
+        rerecordButton.className = 'jspsych-audio-response-button jspsych-btn';
+        rerecordButton.addEventListener('click', startRecording);
+
+
         // audio element processing
         function startRecording() {
             // remove existing playback elements
@@ -190,13 +199,13 @@ jsPsych.plugins["image-audio-response"] = (function() {
             audioData: null
         };
 
-        let dataChunkCount = 0;
+        //let dataChunkCount = 0;
         let recorder = null;
         // function to handle responses by the subject
         function process_audio(stream) {
             // This code largely thanks to skyllo at
             // http://air.ghost.io/recording-to-an-audio-file-using-html5-and-js/
-
+            let dataChunkCount = 0;
             // store streaming data chunks in array
             const chunks = [];
             // create media recorder instance to initialize recording
@@ -247,12 +256,14 @@ jsPsych.plugins["image-audio-response"] = (function() {
         function showPlaybackTools(data) {            
             const okayButton = display_element.querySelector('#jspsych-image-audio-response-okay');
             okayButton.setAttribute('style', 'visibility: visible;');
+            const rerecordButton = display_element.querySelector('#jspsych-image-audio-response-rerecord')
+            rerecordButton.setAttribute('style', 'visibility: visible');
 
             const audioPlayer = display_element.querySelector('#jspsych-image-audio-response-audio');
             const blob = new Blob(data, { type: 'audio/webm' });
             const url = URL.createObjectURL(blob);
             audioPlayer.src = url;
-            //audioPlayer.setAttribute('style', 'visibility: visible;'); // comment out this line if we don't want to show the audio player
+            audioPlayer.setAttribute('style', 'visibility: visible;'); // comment out this line if we don't want to show the audio player
         }
 
         function onRecordingFinish(data) {

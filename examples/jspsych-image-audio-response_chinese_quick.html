@@ -4,7 +4,7 @@
     <title>Demo experiment</title>
     <script src="../jspsych.js"></script>
     <script src="../plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="../plugins/jspsych-image-audio-response.js"></script> 
+    <script src="../plugins/jspsych-image-audio-response-quick.js"></script> 
     <script src="../plugins/jspsych-instructions.js"></script>
     <link rel="stylesheet" href="../css/jspsych.css"></link>
     <style>
@@ -16,17 +16,6 @@
 <script>
 
     let timeline = [];
-
-    /* create welcome message */
-    /*let welcome = {
-        type: "html-keyboard-response",
-        stimulus: "<h2>欢迎来到语言与图像实验研究！</h2>" + 
-        "在这个实验里，您将会看到一些图片，您的任务是根据图片说出图片里物品的数量和名称。在实验过程中，您将会被录音。" +
-        "在实验正式开始之前，你将进入练习部分，完成几个练习后您将进入实验的主要部分。" +
-        "<p>整个实验大约需要15-20分钟。您的参与是自愿的。</p>" +
-        "<p>如果您同意参加实验，请按任何一个键继续。谢谢！</p>"
-    };
-    timeline.push(welcome); */
 
     let welcome = {
         type: 'instructions',
@@ -77,31 +66,25 @@
     const bufferLength = 5000;
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/MisMatch_0062_pumpkin_2.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: false,
         prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0019_tank_4.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: false,
         prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0038_sewingmachine_3.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: false,
         prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });    
@@ -115,31 +98,25 @@
     timeline.push(instruction3)
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0008_cabbage_2.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: false,
         prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0026_calculator_3.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: false,
         prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });
 
     timeline.push({
-        type: 'image-audio-response',
+        type: 'image-audio-response-quick',
         stimulus: 'img/Match_0030_sofa_4.png',
-        //stimulus_duration: 4000,
         postprocessing: saveFunction,
-        response_ends_trial: false,
         prompt: "<p>请说出图中物品的<b>数量</b>和<b>名称</b></p>",
         bufferLength
     });

@@ -9,12 +9,12 @@
  *
  **/
 
-jsPsych.plugins["image-audio-response"] = (function() {
+jsPsych.plugins["image-audio-response-quick"] = (function() {
 
     let plugin = {};
 
     plugin.info = {
-        name: 'image-audio-response',
+        name: 'image-audio-response-quick',
         description: 'Present an image and retrieve an audio response',
         parameters: {
             stimulus: {
@@ -41,7 +41,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
             allowPlayback: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Allow playback',
-                default: true,
+                default: false,
                 description: 'Whether to allow the participant to play back their '+
                 'recording and re-record if unhappy.'
             },
@@ -112,7 +112,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
             response_ends_trial: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Response ends trial',
-                default: false,
+                default: true,
                 description: 'If true, then trial will end when user responds.'
             }
         }
@@ -174,10 +174,10 @@ jsPsych.plugins["image-audio-response"] = (function() {
             navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(process_audio);
         }
 
-        // TODO: Pause 2s before recording.]
+        // TODO: Pause 0.05s before recording.]
         let light = document.querySelector('#jspsych-image-audio-response-audio-container');
         light.innerHTML = trial.preRecordingLight;
-        setTimeout(function(){startRecording()}, 3000);
+        setTimeout(function(){startRecording()}, 50);
         console.log("-------->count down to 3 secs to start recording");
         //startRecording();
 
