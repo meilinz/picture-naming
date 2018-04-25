@@ -201,7 +201,7 @@ jsPsych.plugins["image-audio-response-quick"] = (function() {
             console.log("-----> create media recorder instance here");
 
             let numSeconds = 0;
-            let lightIsDim = false;
+            let lightIsDim = true; //change here
             let interval = setInterval(() => {
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
                 light.innerHTML = lightIsDim ? trial.recordingLight : trial.recordingLightDim;
