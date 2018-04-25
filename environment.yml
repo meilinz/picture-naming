@@ -1,0 +1,47 @@
+name: picture-naming
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ca-certificates=2018.4.16=0
+  - certifi=2018.4.16=py27_0
+  - cmd2=0.6.8=py27_2
+  - docopt=0.6.2=py27_0
+  - fake-factory=0.5.8=py27_0
+  - fuzzywuzzy=0.11.0=py27_1
+  - gitdb=0.6.4=py27_1
+  - gitpython=2.0.8=py27_1
+  - gnureadline=6.3.3=py27_0
+  - gunicorn=19.6.0=py27_0
+  - ipaddress=1.0.22=py_1
+  - itsdangerous=0.24=py_2
+  - jinja2=2.10=py27_0
+  - markupsafe=1.0=py27_0
+  - ncurses=5.9=10
+  - openssl=1.0.2o=0
+  - pip=9.0.3=py27_0
+  - psiturk=2.1.6=py27_2
+  - psutil=5.4.4=py27_0
+  - pyparsing=2.2.0=py27_0
+  - python=2.7.14=5
+  - python-dateutil=2.7.2=py_0
+  - python-levenshtein=0.12.0=py27_0
+  - readline=7.0=0
+  - setproctitle=1.1.10=py27_0
+  - setuptools=39.0.1=py27_0
+  - sh=1.11=py27_0
+  - six=1.11.0=py27_1
+  - smmap=0.9.0=py27_1
+  - sqlite=3.20.1=2
+  - tk=8.6.7=0
+  - ua-parser=0.7.1=py27_0
+  - user-agents=1.0.1=py27_1
+  - wheel=0.31.0=py27_0
+  - zlib=1.2.11=0
+  - boto=2.15.0=py27_0
+  - flask=0.10.1=py27_2
+  - requests=2.2.1=py27_0
+  - sqlalchemy=0.8.3=py27_0
+  - werkzeug=0.10.4=py27_0
+prefix: /anaconda2/envs/picture-naming
+
