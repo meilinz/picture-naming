@@ -58,6 +58,11 @@
 
     let timeline = [];
 
+    let test_stimuli = [
+        {stimulus: 'static/img/Match_0008_cabbage_2.png'},
+        {stimulus: 'static/img/Match_0026_calculator_3.png'},
+        {stimulus: 'static/img/Match_0030_sofa_4.png'}
+    ]
 
     let welcome = {
         type: 'instructions',
@@ -146,7 +151,28 @@
     };
     timeline.push(instruction4)
 
-    timeline.push({
+    let test = {
+      type: 'image-audio-response-quick',
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      postprocessing: saveFunction,
+      data: jsPsych.timelineVariable('data'),
+      prompt: "<p>请说出图中物品的数量和名称</p>",
+      bufferLength,
+      on_finish: function(){
+        psiturk.startTask();
+      }
+
+    }
+
+    let test_procedure = {
+      timeline: [test],
+      timeline_variables: test_stimuli,
+      repetitions: 1,
+      randomize_order: true
+    }    
+
+    timeline.push(test_procedure);
+/*    timeline.push({
         type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0008_cabbage_2.png',
         postprocessing: saveFunction,
@@ -168,7 +194,7 @@
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
+    });*/
 
     jsPsych.init({
         timeline: timeline,
