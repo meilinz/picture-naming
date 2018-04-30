@@ -1,2 +1,7 @@
 .DS_Store
 node_modules/
+.psiturk_history
+custom.pyc
+participants.db
+server.log
+
