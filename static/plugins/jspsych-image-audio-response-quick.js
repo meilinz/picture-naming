@@ -2,19 +2,19 @@
  * jspsych-image-audio-response
  * Matt Jaquiery, Feb 2018
  * Meilin Zhan, March 2018
- * 
+ *
  * plugin for displaying a stimulus and getting an audio response
  *
  * documentation: docs.jspsych.org
  *
  **/
 
-jsPsych.plugins["image-audio-response"] = (function() {
+jsPsych.plugins["image-audio-response-quick"] = (function() {
 
     let plugin = {};
 
     plugin.info = {
-        name: 'image-audio-response',
+        name: 'image-audio-response-quick',
         description: 'Present an image and retrieve an audio response',
         parameters: {
             stimulus: {
@@ -41,7 +41,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
             allowPlayback: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Allow playback',
-                default: true,
+                default: false,
                 description: 'Whether to allow the participant to play back their '+
                 'recording and re-record if unhappy.'
             },
@@ -112,11 +112,14 @@ jsPsych.plugins["image-audio-response"] = (function() {
             response_ends_trial: {
                 type: jsPsych.plugins.parameterType.BOOL,
                 pretty_name: 'Response ends trial',
-                default: false,
+                default: true,
                 description: 'If true, then trial will end when user responds.'
             }
         }
     };
+
+    // Prepare AudioContext to be used in recording.
+    let audio_context = new AudioContext;
 
     plugin.trial = function(display_element, trial) {
 
@@ -126,10 +129,9 @@ jsPsych.plugins["image-audio-response"] = (function() {
         if(typeof trial.postprocessing === 'undefined'){
             console.error('Required parameter "postprocessing" missing in image-audio-response');
         }
-
-        let playbackElements = [];
-
+        
         // display stimulus
+        let playbackElements = [];
         const stimulusId = 'jspsych-image-audio-response-stimulus';
         const stimulusStyle = 'height: 200px; width: auto;';
         let html = `<img src="${trial.stimulus}" id="${stimulusId}" style="${stimulusStyle}"/>`;
@@ -142,7 +144,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
         if (trial.prompt !== null) {
             html += trial.prompt;
         }
-
+        // add button element
         html += '<div id="jspsych-image-audio-response-player"></div>';
         html += '<div id="jspsych-image-audio-response-buttons"></div>';
         display_element.innerHTML = html;
@@ -152,7 +154,7 @@ jsPsych.plugins["image-audio-response"] = (function() {
         const audioPlayer = playerDiv.appendChild(document.createElement('audio'));
         audioPlayer.setAttribute('style', 'visibility: hidden;');
         audioPlayer.id = 'jspsych-image-audio-response-audio';
-        audioPlayer.controls = true;
+        audioPlayer.controls = true
 
         // add "next page" button element
         const buttonDiv = display_element.querySelector('#jspsych-image-audio-response-buttons');
@@ -174,10 +176,10 @@ jsPsych.plugins["image-audio-response"] = (function() {
             navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(process_audio);
         }
 
-        // TODO: Pause 2s before recording.]
+        // TODO: Pause N ms before recording.
         let light = document.querySelector('#jspsych-image-audio-response-audio-container');
         light.innerHTML = trial.preRecordingLight;
-        setTimeout(function(){startRecording()}, 3000);
+        setTimeout(function(){startRecording()}, 50);
         console.log("-------->count down to 3 secs to start recording");
         //startRecording();
 
@@ -190,67 +192,49 @@ jsPsych.plugins["image-audio-response"] = (function() {
             audioData: null
         };
 
-        let dataChunkCount = 0;
         let recorder = null;
         // function to handle responses by the subject
         function process_audio(stream) {
-            // This code largely thanks to skyllo at
-            // http://air.ghost.io/recording-to-an-audio-file-using-html5-and-js/
-
-            // store streaming data chunks in array
-            const chunks = [];
             // create media recorder instance to initialize recording
-            recorder = new MediaRecorder(stream);
+            var input = audio_context.createMediaStreamSource(stream);
+            recorder = new Recorder(input);
             console.log("-----> create media recorder instance here");
-            recorder.data = [];
-            recorder.wrapUp = false;
 
-            let lightIsDim = false
-            recorder.ondataavailable = e => {
-                dataChunkCount++;
-
+            let numSeconds = 0;
+            let lightIsDim = true; //change here
+            let interval = setInterval(() => {
                 let light = document.querySelector('#jspsych-image-audio-response-audio-container');
                 light.innerHTML = lightIsDim ? trial.recordingLight : trial.recordingLightDim;
                 console.log("------> light.innerHTML happens here")
                 lightIsDim = !lightIsDim;
 
-                let clock = document.getElementById('clockDiv');
-                const seconds = Math.floor(dataChunkCount / 2);
-                const displaySeconds = seconds > 9 ? seconds : '0' + seconds; 
-                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
+                if (numSeconds == trial.bufferLength / 1000) {
+                    recorder.stop();
+                    recorder.exportWAV((data) => {
+                        onRecordingFinish(trial.postprocessing(data));
 
-                // add stream data to chunks
-                chunks.push(e.data);
-                if (recorder.wrapUp) {
-                    if (typeof trial.postprocessing !== 'undefined') {
-                        onRecordingFinish(trial.postprocessing(chunks));
-                    } else {
-                        // should never fire - trial.postprocessing is mandatory
-                        onRecordingFinish(chunks);
-                    }
-                    if (trial.allowPlayback) {
-                        showPlaybackTools(chunks);
-                    }
+                        if (trial.allowPlayback)
+                            showPlaybackTools(data);
+                    });
+                    clearInterval(interval);
+                } else if (numSeconds == 0) {
+                    recorder.record();
                 }
-            };
 
-            // start recording with 0.5 second time between receiving 'ondataavailable' events
-            recorder.start(500);
-            // setTimeout to stop recording after 4 seconds
-            setTimeout(() => {
-                // this will trigger one final 'ondataavailable' event and set recorder state to 'inactive'
-                recorder.stop();
-                recorder.wrapUp = true;
-            }, trial.bufferLength);
+                let clock = document.getElementById('clockDiv');
+                const displaySeconds = numSeconds > 9 ? numSeconds : '0' + numSeconds;
+                clock.innerHTML = '录音中 ' + '00:' + displaySeconds;
+                numSeconds++;
+            }, 1000, true);
         }
 
-        function showPlaybackTools(data) {            
+        function showPlaybackTools(data) {
+            // Audio Player
             const okayButton = display_element.querySelector('#jspsych-image-audio-response-okay');
             okayButton.setAttribute('style', 'visibility: visible;');
 
             const audioPlayer = display_element.querySelector('#jspsych-image-audio-response-audio');
-            const blob = new Blob(data, { type: 'audio/webm' });
-            const url = URL.createObjectURL(blob);
+            let url = (URL.createObjectURL(data));
             audioPlayer.src = url;
             //audioPlayer.setAttribute('style', 'visibility: visible;'); // comment out this line if we don't want to show the audio player
         }

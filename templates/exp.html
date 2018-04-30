@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo experiment</title>
+
+    <script src="/static/lib/jquery-min.js" type="text/javascript"></script>
+    <script src="/static/lib/underscore-min.js" type="text/javascript"></script>
+    <script src="/static/lib/backbone-min.js" type="text/javascript"></script>
+    <script src="/static/lib/recorder.js" type="text/javascript"></script>
+
+    <script src="/static/jspsych.js"></script>
+    <script src="/static/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="/static/plugins/jspsych-image-audio-response-quick.js"></script>
+    <!-- <script src="/static/plugins/jspsych-image-audio-response.js"></script> -->
+    <script src="/static/plugins/jspsych-image-audio-response-testmic.js"></script>
+    <script src="/static/plugins/jspsych-instructions.js"></script>
+    <link rel="stylesheet" href="/static/css/jspsych.css"></link>
+
+    <script type="text/javascript">
+        // These fields provided by the psiTurk Server
+        var uniqueId = "{{ uniqueId }}"; // a unique string identifying the worker/task
+        var adServerLoc = "{{ adServerLoc }}"; // the location of your ad (so you can send user back at end of experiment)
+        var mode = "{{ mode }}"; // is this running live, sandbox, or in debug mode?
+    </script>
+
+    <!-- utils.js and psiturk.js provide the basic psiturk functionality -->
+    <script src="/static/utils.js" type="text/javascript"></script>
+    <script src="/static/js/psiturk.js" type="text/javascript"></script>
+
+    <style>
+        img { width: 300px; }
+    </style>
+    <meta charset="utf-8" />
+</head>
+<body></body>
+<script>
+
+    var psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
+
+    var audioSamples = {};
+
+    const saveFunction = function(blob) {
+        let url = URL.createObjectURL(blob);
+        audioSamples[url] = blob;
+        return url;
+    };
+
+    var submitAudio = function() {
+        var request = new XMLHttpRequest();
+        request.open('PUT', '/_wav_upload/' + uniqueId + '/' + fname, true);
+        request.onload = onload || function(){ recorder.clear(); __log(this.responseText) };
+        request.onerror = onerror || function(){
+        recorder.clear();
+        __log("couldn't connect to server for file upload")
+        };
+        request.send(blob);
+    };
+
+    let timeline = [];
+
+    let test_stimuli = [
+        {stimulus: 'static/img/Match_0008_cabbage_2.png'},
+        {stimulus: 'static/img/Match_0009_basket_2.png'},
+        {stimulus: 'static/img/Match_0014_knife_3.png'},
+        {stimulus: 'static/img/Match_0022_hammer_2.png'},
+        {stimulus: 'static/img/Match_0026_calculator_3.png'},
+        {stimulus: 'static/img/Match_0030_sofa_4.png'},
+        {stimulus: 'static/img/Match_0031_comb_2.png'},
+        {stimulus: 'static/img/Match_0033_cleaver_3.png'},
+        {stimulus: 'static/img/Match_0035_pipe_4.png'},
+        {stimulus: 'static/img/Match_0037_toaster_2.png'},
+        {stimulus: 'static/img/Match_0044_iron_4.png'},
+        {stimulus: 'static/img/Match_0055_screwdriver_2.png'},
+        {stimulus: 'static/img/Match_0064_stapler_4.png'},
+        {stimulus: 'static/img/Match_0068_broom_2.png'},
+        {stimulus: 'static/img/Match_0076_spoon_3.png'},
+        {stimulus: 'static/img/Match_0077_hammer_4.png'},
+        {stimulus: 'static/img/Match_0082_pakchoi_3.png'},
+        {stimulus: 'static/img/Match_0088_tv_2.png'},
+        {stimulus: 'static/img/Match_0091_triangleruler_4.png'},
+        {stimulus: 'static/img/Match_0093_glove_3.png'},
+        {stimulus: 'static/img/Match_0100_facebrush_2.png'},
+        {stimulus: 'static/img/Match_0106_guitar_3.png'},
+        {stimulus: 'static/img/Match_0108_pipe_2.png'},
+        {stimulus: 'static/img/Match_0114_toothbrush_4.png'},
+        {stimulus: 'static/img/Match_0118_silvermedal_2.png'},
+        {stimulus: 'static/img/Match_0120_fan_3.png'},
+        {stimulus: 'static/img/Match_0121_garlic_4.png'},
+        {stimulus: 'static/img/Match_0123_computer_2.png'},
+        {stimulus: 'static/img/Match_0125_key_3.png'},
+        {stimulus: 'static/img/Match_0127_popsicle_4.png'},
+        {stimulus: 'static/img/Match_0128_tie_3.png'},
+        {stimulus: 'static/img/Match_0149_comb_2.png'},
+        {stimulus: 'static/img/Match_0152_fork_3.png'},
+        {stimulus: 'static/img/Match_0154_screwdriver_3.png'},
+        {stimulus: 'static/img/Match_0155_paperclip_4.png'},
+        {stimulus: 'static/img/Match_0163_woodendoor_2.png'},
+        {stimulus: 'static/img/Match_0178_motocycle_3.png'},
+        {stimulus: 'static/img/Match_0183_hammer_4.png'},
+        {stimulus: 'static/img/Match_0189_torch_2.png'},
+        {stimulus: 'static/img/Match_0200_laptop_3.png'},
+        {stimulus: 'static/img/Match_0206_bicycle_3.png'},
+        {stimulus: 'static/img/Match_0213_swimmingsuit_3.png'},
+        {stimulus: 'static/img/Match_0240_violin_2.png'},
+        {stimulus: 'static/img/Match_0267_egg_4.png'},
+        {stimulus: 'static/img/Match_0297_plane_4.png'},
+        {stimulus: 'static/img/Match_0301_bicycle_2.png'},
+        {stimulus: 'static/img/Match_0320_thermometer_3.png'},
+        {stimulus: 'static/img/Match_0328_washingmachine_2.png'},
+        {stimulus: 'static/img/Match_0357_spoon_4.png'},
+        {stimulus: 'static/img/Match_0373_piano_3.png'},
+        {stimulus: 'static/img/Match_0389_notebook_4.png'},
+        {stimulus: 'static/img/Match_0392_balance_2.png'},
+        {stimulus: 'static/img/Object_0274_racket_4.png'},
+        {stimulus: 'static/img/Object_0388_bow_4.png'},
+    ]
+
+    let welcome = {
+        type: 'instructions',
+        pages: ['<h2>欢迎欢迎来到语言与图像实验研究！</h2>在这个实验里，您将会看到一些图片，\
+        您的任务是根据图片说出图片里物品的数量和名称。\
+        <br/>在实验过程中，您将会被录音。</p>',
+        '在实验正式开始之前，您将先测试麦克风，然后进入练习部分。完成简短的练习后，您将进入实验的主要部分。',
+        '整个实验大约需要10-15分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
+        show_clickable_nav: true
+    };
+    timeline.push(welcome);
+
+    let instuction1 = {
+        type: 'instructions',
+        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
+        在实验中，您将看到类似如下的图片。您的任务是根据图片，说出图中物品的数量和名称。</br> \
+        例如：<strong>“三只企鹅”</strong> </br></br></br> \
+        <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>"],
+        show_clickable_nav: true
+    };
+    timeline.push(instuction1)
+
+    let instuction2 = {
+        type: 'instructions',
+        pages: ['<h2>实验说明</h2>下面我们将进行麦克风测试，您将有机会回放检查自己的录音。<strong>录音完成后，请点击播放键检查录音是否成功。</strong></br>\
+        如果您能听到自己的声音，说明录音成功可以继续。如果没有声音，请检查麦克风设置。</br>\
+        请点击下一页进入麦克风测试。</br></br></br>'],
+        show_clickable_nav: true,
+
+        on_finish: function(data) {
+            psiturk.startTask();
+        },
+    };
+    timeline.push(instuction2)
+
+
+    const bufferLength = 5000;
+
+    timeline.push({
+        type: 'image-audio-response-testmic',
+        stimulus: 'static/img/Object_0176_penguin_3.png',
+        postprocessing: saveFunction,
+        response_ends_trial: false,
+        prompt: "<p>麦克风测试: 如果您能听见自己的声音，说明录音成功可以点击下一页继续。</br>如果您对录音不满意，可以点击重新录音。</br>如果没有声音，请检查麦克风设置。</p>",
+        allowPlayback: true,
+        bufferLength
+    });    
+
+    let instruction3 = {
+        type:'instructions',
+        pages: ['麦克风测试结束。</br> 如果您能在录音回放中听到自己的声音，请点击下一页进入练习阶段。</br>\
+        在练习中，我们将不提供录音回放，您做的每一题依然会被录音，请放心回答。'],
+        show_clickable_nav: true
+    };
+    timeline.push(instruction3)
+
+    timeline.push({
+        type: 'image-audio-response-quick',
+        stimulus: 'static/img/MisMatch_0062_pumpkin_2.png',
+        postprocessing: saveFunction,
+        prompt: "<p>请说出图中物品的数量和名称</p>",
+        bufferLength
+    });
+
+    timeline.push({
+        type: 'image-audio-response-quick',
+        stimulus: 'static/img/Match_0019_tank_4.png',
+        postprocessing: saveFunction,
+        prompt: "<p>请说出图中物品的数量和名称</p>",
+        bufferLength
+    });
+
+    timeline.push({
+        type: 'image-audio-response-quick',
+        stimulus: 'static/img/Match_0038_sewingmachine_3.png',
+        postprocessing: saveFunction,
+        prompt: "<p>请说出图中物品的数量和名称</p>",
+        bufferLength
+    });
+
+    let instruction4 = {
+        type:'instructions',
+        pages: ['练习结束。</br> 请点击下一页进入正式实验。实验将持续5-10分钟，中途不能暂停。</br>\
+        在正式实验中，我们将不提供录音回复，您做的每一题依然会被录音，请放心回答。'],
+        show_clickable_nav: true
+    };
+    timeline.push(instruction4)
+
+    let test = {
+      type: 'image-audio-response-quick',
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      postprocessing: saveFunction,
+      data: jsPsych.timelineVariable('data'),
+      prompt: "<p>请说出图中物品的数量和名称</p>",
+      bufferLength,
+      on_finish: function(){
+        psiturk.startTask();
+      }
+
+    }
+
+    let test_procedure = {
+      timeline: [test],
+      timeline_variables: test_stimuli,
+      repetitions: 1,
+      randomize_order: true
+    }    
+
+    timeline.push(test_procedure);
+/*    timeline.push({
+        type: 'image-audio-response-quick',
+        stimulus: 'static/img/Match_0008_cabbage_2.png',
+        postprocessing: saveFunction,
+        prompt: "<p>请说出图中物品的数量和名称</p>",
+        bufferLength
+    });
+
+    timeline.push({
+        type: 'image-audio-response-quick',
+        stimulus: 'static/img/Match_0026_calculator_3.png',
+        postprocessing: saveFunction,
+        prompt: "<p>请说出图中物品的数量和名称</p>",
+        bufferLength
+    });
+
+    timeline.push({
+        type: 'image-audio-response-quick',
+        stimulus: 'static/img/Match_0030_sofa_4.png',
+        postprocessing: saveFunction,
+        prompt: "<p>请说出图中物品的数量和名称</p>",
+        bufferLength
+    });*/
+
+    jsPsych.init({
+        timeline: timeline,
+        show_progress_bar: true,
+        on_finish: function(){
+            psiturk.saveData({
+                success: function() { psiturk.completeHIT(); },
+                error: function() { console.log("error saving data"); }
+            });
+            jsPsych.data.displayData();
+        },
+        on_data_update: function(trial_data) {
+            // Only need to do post-processing for audio trials.
+            if (!trial_data.audioData)
+                return;
+            psiturk.recordTrialData(trial_data);
+
+            // Submit trial audio to server.
+            var audioSample = audioSamples[trial_data.audioData];
+            var request = new XMLHttpRequest();
+            request.open('PUT', '/_wav_upload/' + uniqueId + '/' + trial_data.trial_index, true);
+            request.onerror = onerror || function(){
+            recorder.clear();
+            __log("couldn't connect to server for file upload")
+            };
+            request.send(audioSample);
+        }
+    });
+
+</script>
+</html>
