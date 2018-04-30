@@ -124,7 +124,6 @@
         '整个实验大约需要10-15分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
         show_clickable_nav: true
     };
-    timeline.push(welcome);
 
     let instuction1 = {
         type: 'instructions',
@@ -134,7 +133,6 @@
         <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>"],
         show_clickable_nav: true
     };
-    timeline.push(instuction1)
 
     let instuction2 = {
         type: 'instructions',
@@ -147,12 +145,10 @@
             psiturk.startTask();
         },
     };
-    timeline.push(instuction2)
-
 
     const bufferLength = 5000;
 
-    timeline.push({
+    let mictest = {
         type: 'image-audio-response-testmic',
         stimulus: 'static/img/Object_0176_penguin_3.png',
         postprocessing: saveFunction,
@@ -160,7 +156,7 @@
         prompt: "<p>麦克风测试: 如果您能听见自己的声音，说明录音成功可以点击下一页继续。</br>如果您对录音不满意，可以点击重新录音。</br>如果没有声音，请检查麦克风设置。</p>",
         allowPlayback: true,
         bufferLength
-    });    
+    };    
 
     let instruction3 = {
         type:'instructions',
@@ -168,31 +164,30 @@
         在练习中，我们将不提供录音回放，您做的每一题依然会被录音，请放心回答。'],
         show_clickable_nav: true
     };
-    timeline.push(instruction3)
 
-    timeline.push({
+    let practice1 = {
         type: 'image-audio-response-quick',
         stimulus: 'static/img/MisMatch_0062_pumpkin_2.png',
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
+    };
 
-    timeline.push({
+    let practice2 = {
         type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0019_tank_4.png',
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
+    };
 
-    timeline.push({
+    let practice3 = {
         type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0038_sewingmachine_3.png',
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
+    };
 
     let instruction4 = {
         type:'instructions',
@@ -200,8 +195,7 @@
         在正式实验中，我们将不提供录音回复，您做的每一题依然会被录音，请放心回答。'],
         show_clickable_nav: true
     };
-    timeline.push(instruction4)
-
+    
     let test = {
       type: 'image-audio-response-quick',
       stimulus: jsPsych.timelineVariable('stimulus'),
@@ -217,35 +211,22 @@
 
     let test_procedure = {
       timeline: [test],
+      show_progress_bar: true,
       timeline_variables: test_stimuli,
       repetitions: 1,
       randomize_order: true
     }    
 
+    timeline.push(welcome);
+    timeline.push(instuction1);
+    timeline.push(instuction2);
+    timeline.push(mictest);
+    timeline.push(instruction3);
+    timeline.push(practice1);
+    timeline.push(practice2);
+    timeline.push(practice3);
+    timeline.push(instruction4);
     timeline.push(test_procedure);
-/*    timeline.push({
-        type: 'image-audio-response-quick',
-        stimulus: 'static/img/Match_0008_cabbage_2.png',
-        postprocessing: saveFunction,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength
-    });
-
-    timeline.push({
-        type: 'image-audio-response-quick',
-        stimulus: 'static/img/Match_0026_calculator_3.png',
-        postprocessing: saveFunction,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength
-    });
-
-    timeline.push({
-        type: 'image-audio-response-quick',
-        stimulus: 'static/img/Match_0030_sofa_4.png',
-        postprocessing: saveFunction,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength
-    });*/
 
     jsPsych.init({
         timeline: timeline,
