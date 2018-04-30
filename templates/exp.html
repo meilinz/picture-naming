@@ -127,23 +127,18 @@
 
     let instuction1 = {
         type: 'instructions',
-        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
+        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。请找一个相对安静以及方便说话的地方。请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
         在实验中，您将看到类似如下的图片。您的任务是根据图片，说出图中物品的数量和名称。</br> \
         例如：<strong>“三只企鹅”</strong> </br></br></br> \
-        <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>"],
-        show_clickable_nav: true
-    };
-
-    let instuction2 = {
-        type: 'instructions',
-        pages: ['<h2>实验说明</h2>下面我们将进行麦克风测试，您将有机会回放检查自己的录音。<strong>录音完成后，请点击播放键检查录音是否成功。</strong></br>\
+        <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>",
+        '<h2>实验说明</h2>下面我们将进行麦克风测试，您将有机会回放检查自己的录音。<strong>录音完成后，请点击播放键检查录音是否成功。</strong></br>\
         如果您能听到自己的声音，说明录音成功可以继续。如果没有声音，请检查麦克风设置。</br>\
         请点击下一页进入麦克风测试。</br></br></br>'],
         show_clickable_nav: true,
 
-        on_finish: function(data) {
+        on_finish:function(data) {
             psiturk.startTask();
-        },
+        }
     };
 
     const bufferLength = 5000;
@@ -158,7 +153,7 @@
         bufferLength
     };    
 
-    let instruction3 = {
+    let instruction2 = {
         type:'instructions',
         pages: ['麦克风测试结束。</br> 如果您能在录音回放中听到自己的声音，请点击下一页进入练习阶段。</br>\
         在练习中，我们将不提供录音回放，您做的每一题依然会被录音，请放心回答。'],
@@ -189,7 +184,7 @@
         bufferLength
     };
 
-    let instruction4 = {
+    let instruction3 = {
         type:'instructions',
         pages: ['练习结束。</br> 请点击下一页进入正式实验。实验将持续5-10分钟，中途不能暂停。</br>\
         在正式实验中，我们将不提供录音回复，您做的每一题依然会被录音，请放心回答。'],
@@ -219,13 +214,12 @@
 
     timeline.push(welcome);
     timeline.push(instuction1);
-    timeline.push(instuction2);
     timeline.push(mictest);
-    timeline.push(instruction3);
+    timeline.push(instruction2);
     timeline.push(practice1);
     timeline.push(practice2);
     timeline.push(practice3);
-    timeline.push(instruction4);
+    timeline.push(instruction3);
     timeline.push(test_procedure);
 
     jsPsych.init({
