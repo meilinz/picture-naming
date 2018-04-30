@@ -127,7 +127,7 @@
 
     let instuction1 = {
         type: 'instructions',
-        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。请找一个相对安静以及方便说话的地方。请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
+        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。</br> 请找一个相对安静以及方便说话的地方。</br> 请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
         在实验中，您将看到类似如下的图片。您的任务是根据图片，说出图中物品的数量和名称。</br> \
         例如：<strong>“三只企鹅”</strong> </br></br></br> \
         <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>",
@@ -186,7 +186,7 @@
 
     let instruction3 = {
         type:'instructions',
-        pages: ['练习结束。</br> 请点击下一页进入正式实验。实验将持续5-10分钟，中途不能暂停。</br>\
+        pages: ['练习结束。</br> 请点击下一页进入正式实验。实验将持续5分钟30秒，中途不能暂停。</br>\
         在正式实验中，我们将不提供录音回复，您做的每一题依然会被录音，请放心回答。'],
         show_clickable_nav: true
     };
@@ -206,7 +206,6 @@
 
     let test_procedure = {
       timeline: [test],
-      show_progress_bar: true,
       timeline_variables: test_stimuli,
       repetitions: 1,
       randomize_order: true
@@ -224,7 +223,7 @@
 
     jsPsych.init({
         timeline: timeline,
-        show_progress_bar: true,
+        show_progress_bar: false,
         on_finish: function(){
             psiturk.saveData({
                 success: function() { psiturk.completeHIT(); },
