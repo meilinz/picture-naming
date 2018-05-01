@@ -18,6 +18,7 @@ table_name = turkdemo
 [Server Parameters]
 host = 0.0.0.0
 port = 22362
+real_host = www.youcantalktome.com
 cutoff_time = 30
 logfile = server.log
 loglevel = 2

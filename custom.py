@@ -1,6 +1,6 @@
 # this file imports custom routes into the experiment server
 
-from flask import Blueprint, render_template, request, jsonify, Response, abort, current_app, url_for
+from flask import Blueprint, render_template, request, jsonify, Response, abort, current_app, url_for, redirect
 from jinja2 import TemplateNotFound
 from functools import wraps
 from sqlalchemy import or_
@@ -99,17 +99,20 @@ def wav_upload(uid = None, fname = None):
         current_app.logger.debug('something bad happened: {}'.format(e))
         return jsonify(error = 'Server problem'), 500
 
-#----------------------------------------------
-# example accessing data
-#----------------------------------------------
-@custom_code.route('/view_data')
-@myauth.requires_auth
-def list_my_data():
-        users = Participant.query.all()
-	try:
-		return render_template('list.html', participants=users)
-	except TemplateNotFound:
-		abort(404)
+
+@custom_code.route("/receive_worker/<task>", methods=['GET'])
+def receive_worker(task):
+    # Only permit one worker per IP address.
+    # TODO make sure this works with the reverse proxy.
+    # Maybe use nginx request environ variable HTTP_X_REAL_IP ?
+    worker_id = str(request.remote_addr).replace(".", "")
+
+    url = "https://{real_host}/ad?assignmentId={task}&hitId=none&workerId={worker_id}" \
+            .format(real_host=config.get("Server Parameters", "real_host"),
+                    task=task, worker_id=worker_id)
+
+    return redirect(url, code=302)
+
 
 #----------------------------------------------
 # example computing bonus
@@ -145,4 +148,4 @@ def compute_bonus():
     except:
         abort(404)  # again, bad to display HTML, but...
 
-    
+
