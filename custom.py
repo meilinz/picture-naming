@@ -105,9 +105,9 @@ def receive_worker(task):
     # Only permit one worker per IP address.
     # TODO make sure this works with the reverse proxy.
     # Maybe use nginx request environ variable HTTP_X_REAL_IP ?
-    worker_id = str(request.remote_addr).replace(".", "")
+    worker_id = str(request.environ.get("HTTP_X_FORWARDED_FOR")).replace(".", "")
 
-    url = "https://{real_host}/ad?assignmentId={task}&hitId=none&workerId={worker_id}" \
+    url = "https://{real_host}/ad?assignmentId={task}&hitId=none&workerId={worker_id}&mode=sandbox" \
             .format(real_host=config.get("Server Parameters", "real_host"),
                     task=task, worker_id=worker_id)
 
