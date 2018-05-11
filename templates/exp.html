@@ -14,6 +14,8 @@
     <!-- <script src="/static/plugins/jspsych-image-audio-response.js"></script> -->
     <script src="/static/plugins/jspsych-image-audio-response-testmic.js"></script>
     <script src="/static/plugins/jspsych-instructions.js"></script>
+    <script src="/static/plugins/jspsych-survey-text.js" type="text/javascript"></script>
+    <script src="/static/plugins/jspsych-survey-multi-choice.js" type="text/javascript"></script>
     <link rel="stylesheet" href="/static/css/jspsych.css"></link>
 
     <script type="text/javascript">
@@ -36,9 +38,9 @@
 <script>
 
     var psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
-
+    
     var audioSamples = {};
-
+    
     const saveFunction = function(blob) {
         let url = URL.createObjectURL(blob);
         audioSamples[url] = blob;
@@ -55,10 +57,10 @@
         };
         request.send(blob);
     };
-
+    
     let timeline = [];
 
-    let test_stimuli = [
+/*    let test_stimuli = [
         {stimulus: 'static/img/Match_0008_cabbage_2.png'},
         {stimulus: 'static/img/Match_0009_basket_2.png'},
         {stimulus: 'static/img/Match_0014_knife_3.png'},
@@ -81,7 +83,7 @@
         {stimulus: 'static/img/Match_0093_glove_3.png'},
         {stimulus: 'static/img/Match_0100_facebrush_2.png'},
         {stimulus: 'static/img/Match_0106_guitar_3.png'},
-        {stimulus: 'static/img/Match_0108_pipe_2.png'},
+        {stimulus: 'static/img/Match_0108_pipe_3.png'},
         {stimulus: 'static/img/Match_0114_toothbrush_4.png'},
         {stimulus: 'static/img/Match_0118_silvermedal_2.png'},
         {stimulus: 'static/img/Match_0120_fan_3.png'},
@@ -100,7 +102,7 @@
         {stimulus: 'static/img/Match_0189_torch_2.png'},
         {stimulus: 'static/img/Match_0200_laptop_3.png'},
         {stimulus: 'static/img/Match_0206_bicycle_3.png'},
-        {stimulus: 'static/img/Match_0213_swimmingsuit_3.png'},
+        {stimulus: 'static/img/Match_0213_swimmingsuit_4.png'},
         {stimulus: 'static/img/Match_0240_violin_2.png'},
         {stimulus: 'static/img/Match_0267_egg_4.png'},
         {stimulus: 'static/img/Match_0297_plane_4.png'},
@@ -113,46 +115,75 @@
         {stimulus: 'static/img/Match_0392_balance_2.png'},
         {stimulus: 'static/img/Object_0274_racket_4.png'},
         {stimulus: 'static/img/Object_0388_bow_4.png'},
+    ]*/
+
+    let test_stimuli = [
+        {stimulus: 'static/img/Match_0008_cabbage_2.png'},
+        {stimulus: 'static/img/Match_0009_basket_2.png'},
+        {stimulus: 'static/img/Match_0014_knife_3.png'},
+        {stimulus: 'static/img/Match_0022_hammer_2.png'},
     ]
 
     let welcome = {
         type: 'instructions',
-        pages: ['<h2>欢迎欢迎来到语言与图像实验研究！</h2>在这个实验里，您将会看到一些图片，\
+        pages: ['<h2>欢迎来到语言与图像实验研究！</h2>在这个实验里，您将会看到一些图片，\
         您的任务是根据图片说出图片里物品的数量和名称。\
-        <br/>在实验过程中，您将会被录音。</p>',
+        <br/>在实验过程中，您将会被录音。为保证录音兼容性，请使用 Chrome 谷歌浏览器 或 Firefox 火狐浏览器。\
+        <br/>如果您现在用的是其他浏览器，请复制粘贴地址栏的链接（包含https），用上述两种浏览器中的一种打开。</p>',
         '在实验正式开始之前，您将先测试麦克风，然后进入练习部分。完成简短的练习后，您将进入实验的主要部分。',
-        '整个实验大约需要10-15分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
+        '整个实验大约需要10分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
         show_clickable_nav: true
     };
-    timeline.push(welcome);
 
-    let instuction1 = {
+    let age = {
+        type: 'survey-text',
+        questions: [{prompt: '您的年龄是（几岁，请填一个整数，如：22）？'}]
+    };
+
+    let gender = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: '您的性别是？', options: ["男", "女"], required: true}]
+    };
+
+    let nativespeaker = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: "普通话/官话是你的母语吗（3岁以前说普通话/官话）?", options: ["是的", "不是"], required: true}]
+    };
+
+    let dialect = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: "除了普通话/官话方言/北方方言以外，你平时讲其它汉语方言吗 (如有，选最常用的）？", options: ["基本不讲其它方言","粤语", "吴语", "客语", "闽语（包括潮汕话）", "湘语","赣语"], required: true}]
+    };
+
+    let residence = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: "你现在居住在?", options: ["中国大陆", "中国大陆以外"], required: true}]
+    };
+
+    let history = {
+        type: 'survey-text',
+        questions: [{prompt: '您是否在中国大陆以外连续居住过6个月以上？如没有，填0。如有，填在境外居住年数（如：2），不满一年填1。'}]
+    };
+
+    let instruction1 = {
         type: 'instructions',
-        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
+        pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。</br> 请找一个相对安静以及方便说话的地方。</br> 请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
         在实验中，您将看到类似如下的图片。您的任务是根据图片，说出图中物品的数量和名称。</br> \
         例如：<strong>“三只企鹅”</strong> </br></br></br> \
-        <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>"],
-        show_clickable_nav: true
-    };
-    timeline.push(instuction1)
-
-    let instuction2 = {
-        type: 'instructions',
-        pages: ['<h2>实验说明</h2>下面我们将进行麦克风测试，您将有机会回放检查自己的录音。<strong>录音完成后，请点击播放键检查录音是否成功。</strong></br>\
+        <div style='float: center;'><img src='static/img/Object_0176_penguin_3.png'></img></br></br></br>",
+        '<h2>实验说明</h2>下面我们将进行麦克风测试，您将有机会回放检查自己的录音。<strong>录音完成后，请点击播放键检查录音是否成功。</strong></br>\
         如果您能听到自己的声音，说明录音成功可以继续。如果没有声音，请检查麦克风设置。</br>\
         请点击下一页进入麦克风测试。</br></br></br>'],
         show_clickable_nav: true,
-
-        on_finish: function(data) {
+        
+        on_finish:function(data) {
             psiturk.startTask();
-        },
+        }
     };
-    timeline.push(instuction2)
-
 
     const bufferLength = 5000;
-
-    timeline.push({
+    
+    let mictest = {
         type: 'image-audio-response-testmic',
         stimulus: 'static/img/Object_0176_penguin_3.png',
         postprocessing: saveFunction,
@@ -160,48 +191,46 @@
         prompt: "<p>麦克风测试: 如果您能听见自己的声音，说明录音成功可以点击下一页继续。</br>如果您对录音不满意，可以点击重新录音。</br>如果没有声音，请检查麦克风设置。</p>",
         allowPlayback: true,
         bufferLength
-    });    
-
-    let instruction3 = {
+    };    
+    
+    let instruction2 = {
         type:'instructions',
         pages: ['麦克风测试结束。</br> 如果您能在录音回放中听到自己的声音，请点击下一页进入练习阶段。</br>\
         在练习中，我们将不提供录音回放，您做的每一题依然会被录音，请放心回答。'],
         show_clickable_nav: true
     };
-    timeline.push(instruction3)
-
-    timeline.push({
+    
+    let practice1 = {
         type: 'image-audio-response-quick',
         stimulus: 'static/img/MisMatch_0062_pumpkin_2.png',
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
-
-    timeline.push({
+    };
+    
+    let practice2 = {
         type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0019_tank_4.png',
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
-
-    timeline.push({
+    };
+    
+    let practice3 = {
         type: 'image-audio-response-quick',
         stimulus: 'static/img/Match_0038_sewingmachine_3.png',
         postprocessing: saveFunction,
         prompt: "<p>请说出图中物品的数量和名称</p>",
         bufferLength
-    });
-
-    let instruction4 = {
+    };
+    
+    let instruction3 = {
         type:'instructions',
-        pages: ['练习结束。</br> 请点击下一页进入正式实验。实验将持续5-10分钟，中途不能暂停。</br>\
+        pages: ['练习结束。</br> 请点击下一页进入正式实验。实验将持续5分钟30秒，中途不能暂停。</br>\
         在正式实验中，我们将不提供录音回复，您做的每一题依然会被录音，请放心回答。'],
         show_clickable_nav: true
     };
-    timeline.push(instruction4)
-
+    
     let test = {
       type: 'image-audio-response-quick',
       stimulus: jsPsych.timelineVariable('stimulus'),
@@ -214,42 +243,43 @@
       }
 
     }
-
+    
     let test_procedure = {
       timeline: [test],
       timeline_variables: test_stimuli,
       repetitions: 1,
       randomize_order: true
-    }    
+    }
+    
+    let code = Math.floor(Math.random()*100000000);
+    let completionMessage = "实验结果已经记录到数据库，您的完成代码是 " + code.toString() + "。\n 请记下这个代码并截图作为您投标的依据。";
+    
+    let completion_code = {
+        type: 'survey-text',
+        preamble: completionMessage,
+        questions: [{prompt: '记录代码及截图后，请将以上完成代码复制粘贴到这里（Witmart/猪八戒用户必填)，并点击下一页提交。如果没有点击下一页提交，您的数据将没有被记录到数据库。'}]
+    }
 
+    timeline.push(welcome);
+    timeline.push(age);
+    timeline.push(gender);
+    timeline.push(nativespeaker);
+    timeline.push(dialect);
+    timeline.push(residence);
+    timeline.push(history);
+    timeline.push(instruction1);
+    timeline.push(mictest);
+    timeline.push(instruction2);
+    timeline.push(practice1);
+    timeline.push(practice2);
+    timeline.push(practice3);
+    timeline.push(instruction3);
     timeline.push(test_procedure);
-/*    timeline.push({
-        type: 'image-audio-response-quick',
-        stimulus: 'static/img/Match_0008_cabbage_2.png',
-        postprocessing: saveFunction,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength
-    });
-
-    timeline.push({
-        type: 'image-audio-response-quick',
-        stimulus: 'static/img/Match_0026_calculator_3.png',
-        postprocessing: saveFunction,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength
-    });
-
-    timeline.push({
-        type: 'image-audio-response-quick',
-        stimulus: 'static/img/Match_0030_sofa_4.png',
-        postprocessing: saveFunction,
-        prompt: "<p>请说出图中物品的数量和名称</p>",
-        bufferLength
-    });*/
+    timeline.push(completion_code);
 
     jsPsych.init({
         timeline: timeline,
-        show_progress_bar: true,
+        show_progress_bar: false,
         on_finish: function(){
             psiturk.saveData({
                 success: function() { psiturk.completeHIT(); },
@@ -259,8 +289,8 @@
         },
         on_data_update: function(trial_data) {
             // Only need to do post-processing for audio trials.
-            if (!trial_data.audioData)
-                return;
+            //if (!trial_data.audioData)
+                //return;
             psiturk.recordTrialData(trial_data);
 
             // Submit trial audio to server.
