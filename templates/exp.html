@@ -14,6 +14,8 @@
     <!-- <script src="/static/plugins/jspsych-image-audio-response.js"></script> -->
     <script src="/static/plugins/jspsych-image-audio-response-testmic.js"></script>
     <script src="/static/plugins/jspsych-instructions.js"></script>
+    <script src="/static/plugins/jspsych-survey-text.js" type="text/javascript"></script>
+    <script src="/static/plugins/jspsych-survey-multi-choice.js" type="text/javascript"></script>
     <link rel="stylesheet" href="/static/css/jspsych.css"></link>
 
     <script type="text/javascript">
@@ -58,7 +60,7 @@
 
     let timeline = [];
 
-    let test_stimuli = [
+/*    let test_stimuli = [
         {stimulus: 'static/img/Match_0008_cabbage_2.png'},
         {stimulus: 'static/img/Match_0009_basket_2.png'},
         {stimulus: 'static/img/Match_0014_knife_3.png'},
@@ -113,6 +115,13 @@
         {stimulus: 'static/img/Match_0392_balance_2.png'},
         {stimulus: 'static/img/Object_0274_racket_4.png'},
         {stimulus: 'static/img/Object_0388_bow_4.png'},
+    ]*/
+
+    let test_stimuli = [
+        {stimulus: 'static/img/Match_0008_cabbage_2.png'},
+        {stimulus: 'static/img/Match_0009_basket_2.png'},
+        {stimulus: 'static/img/Match_0014_knife_3.png'},
+        {stimulus: 'static/img/Match_0022_hammer_2.png'},
     ]
 
     let welcome = {
@@ -123,6 +132,27 @@
         '在实验正式开始之前，您将先测试麦克风，然后进入练习部分。完成简短的练习后，您将进入实验的主要部分。',
         '整个实验大约需要10-15分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
         show_clickable_nav: true
+    };
+
+    let age_block = {
+        type: 'survey-text',
+        questions: [{prompt: '您的年龄是（几岁，请填一个整数，如：22）？'}]
+    };
+
+    let demo_block = {
+        type: 'survey-multi-choice',
+        questions: [
+            {prompt: '您的性别是？', options: ["男", "女"], required: true},
+            {prompt: "普通话/官话是你的母语吗（3岁以前说普通话/官话）?", options: ["是的", "不是"], required: true},
+            {prompt: "除了普通话/官话方言/北方方言以外，你平时讲其它汉语方言吗 (如有，选最常用的）？", options: ["基本不讲其它方言","粤语", "吴语", "客语", "闽语（包括潮汕话）", "湘语","赣语"], required: true}
+        ]
+    };
+
+    let residence_block = {
+        type: 'survey-text',
+        questions: [
+            {prompt: '您是否在中国大陆以外连续居住过6个月以上？如没有，填0。如有，填在境外居住年数（如：2），不满一年填1。'}
+        ]
     };
 
     let instuction1 = {
@@ -212,6 +242,9 @@
     }    
 
     timeline.push(welcome);
+    timeline.push(age_block);
+    timeline.push(demo_block);
+    timeline.push(residence_block);
     timeline.push(instuction1);
     timeline.push(mictest);
     timeline.push(instruction2);
@@ -233,8 +266,8 @@
         },
         on_data_update: function(trial_data) {
             // Only need to do post-processing for audio trials.
-            if (!trial_data.audioData)
-                return;
+            //if (!trial_data.audioData)
+                //return;
             psiturk.recordTrialData(trial_data);
 
             // Submit trial audio to server.
