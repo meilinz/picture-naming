@@ -9,21 +9,19 @@
         <div id="container-error">
 
             <div id="error">
-                <h1>Sorry, there was an error</h1>
+                <h1>抱歉，出错了。</h1>
                 <hr>
 
                 <div class="alert alert-danger">
                 {% if errornum == 1008 %}
                     
-                        <p>Sorry, our records indicate that you have attempted to complete this HIT, but quit before finishing.</p>
-                        <p>Because this is a Psychology experiment, you can only complete this HIT once.</p>
-                        <p>Please return the HIT so someone else can perform the experiment.</p>
+                        <p>抱歉，我们的记录表明您已经试图完成这个任务，但在完成之前退出。</p>
+                        <p>因为这是一个心理学实验，所以您只能完成一次。</p>
 
                 {% elif errornum == 1010 %}
 
-                        <p>Sorry, our records indicate that you have already completed (or attempted to complete) this HIT.</p>
-                        <p>Because this is a Psychology experiment, you can only complete this HIT once.</p>
-                        <p>Please release the HIT so someone else can perform the experiment.</p>
+                        <p>抱歉，我们的记录表明您已经完成（或试图完成）此任务。</p>
+                        <p>因为这是一个心理学实验，所以您只能完成一次。</p>
 
                 {% else %}
 
