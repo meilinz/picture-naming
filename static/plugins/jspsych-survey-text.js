@@ -61,7 +61,7 @@ jsPsych.plugins['survey-text'] = (function() {
       button_label: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Button label',
-        default:  'Continue',
+        default:  '下一页',
         description: 'The text that appears on the button to finish the trial.'
       }
     }
