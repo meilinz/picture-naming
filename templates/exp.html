@@ -128,34 +128,44 @@
         type: 'instructions',
         pages: ['<h2>欢迎欢迎来到语言与图像实验研究！</h2>在这个实验里，您将会看到一些图片，\
         您的任务是根据图片说出图片里物品的数量和名称。\
-        <br/>在实验过程中，您将会被录音。</p>',
+        <br/>在实验过程中，您将会被录音。为保证录音兼容性，请使用 Chrome 谷歌浏览器 或 Firefox 火狐浏览器。\
+        <br/>如果您现在用的是其他浏览器，请复制粘贴地址栏的链接（包含https），用上述两种浏览器中的一种打开。</p>',
         '在实验正式开始之前，您将先测试麦克风，然后进入练习部分。完成简短的练习后，您将进入实验的主要部分。',
-        '整个实验大约需要10-15分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
+        '整个实验大约需要10分钟。您的参与是自愿的。如果您同意参加实验，请点击下一页继续。谢谢！'],
         show_clickable_nav: true
     };
 
-    let age_block = {
+    let age = {
         type: 'survey-text',
         questions: [{prompt: '您的年龄是（几岁，请填一个整数，如：22）？'}]
     };
 
-    let demo_block = {
+    let gender = {
         type: 'survey-multi-choice',
-        questions: [
-            {prompt: '您的性别是？', options: ["男", "女"], required: true},
-            {prompt: "普通话/官话是你的母语吗（3岁以前说普通话/官话）?", options: ["是的", "不是"], required: true},
-            {prompt: "除了普通话/官话方言/北方方言以外，你平时讲其它汉语方言吗 (如有，选最常用的）？", options: ["基本不讲其它方言","粤语", "吴语", "客语", "闽语（包括潮汕话）", "湘语","赣语"], required: true}
-        ]
+        questions: [{prompt: '您的性别是？', options: ["男", "女"], required: true}]
     };
 
-    let residence_block = {
+    let nativespeaker = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: "普通话/官话是你的母语吗（3岁以前说普通话/官话）?", options: ["是的", "不是"], required: true}]
+    };
+
+    let dialect = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: "除了普通话/官话方言/北方方言以外，你平时讲其它汉语方言吗 (如有，选最常用的）？", options: ["基本不讲其它方言","粤语", "吴语", "客语", "闽语（包括潮汕话）", "湘语","赣语"], required: true}]
+    };
+
+    let residence = {
+        type: 'survey-multi-choice',
+        questions: [{prompt: "你现在居住在?", options: ["中国大陆", "中国大陆以外"], required: true}]
+    };
+
+    let history = {
         type: 'survey-text',
-        questions: [
-            {prompt: '您是否在中国大陆以外连续居住过6个月以上？如没有，填0。如有，填在境外居住年数（如：2），不满一年填1。'}
-        ]
+        questions: [{prompt: '您是否在中国大陆以外连续居住过6个月以上？如没有，填0。如有，填在境外居住年数（如：2），不满一年填1。'}]
     };
 
-    let instuction1 = {
+    let instruction1 = {
         type: 'instructions',
         pages: ['<h2>实验说明</h2>在实验中，我们将对您进行录音。</br> 请找一个相对安静以及方便说话的地方。</br> 请确保您的麦克风处于打开状态。',"<h2>实验说明</h2> \
         在实验中，您将看到类似如下的图片。您的任务是根据图片，说出图中物品的数量和名称。</br> \
@@ -239,13 +249,25 @@
       timeline_variables: test_stimuli,
       repetitions: 1,
       randomize_order: true
-    }    
+    }
+    
+    let code = Math.floor(Math.random()*100000000);
+    let completionMessage = "实验结果已经记录到数据库，您的完成代码是 " + code.toString() + "。\n 请记下这个代码并截图作为您投标的依据。";
+
+    let completion_code = {
+        type: 'survey-text',
+        preamble: completionMessage,
+        questions: [{prompt: '记录代码及截图后，请将以上完成代码复制粘贴到这里（Witmart/猪八戒用户必填)，并点击下一页提交。如果没有点击下一页提交，您的数据将没有被记录到数据库。'}]
+    }
 
     timeline.push(welcome);
-    timeline.push(age_block);
-    timeline.push(demo_block);
-    timeline.push(residence_block);
-    timeline.push(instuction1);
+    timeline.push(age);
+    timeline.push(gender);
+    timeline.push(nativespeaker);
+    timeline.push(dialect);
+    timeline.push(residence);
+    timeline.push(history);
+    timeline.push(instruction1);
     timeline.push(mictest);
     timeline.push(instruction2);
     timeline.push(practice1);
@@ -253,6 +275,7 @@
     timeline.push(practice3);
     timeline.push(instruction3);
     timeline.push(test_procedure);
+    timeline.push(completion_code);
 
     jsPsych.init({
         timeline: timeline,
